@@ -47,7 +47,7 @@ int createWindow(int width, int height, const char *title) {
 		// Render
 		render(deltaSeconds);
 
-		// call user update function
+		// Call user update function
 		update(deltaSeconds);
 
 
