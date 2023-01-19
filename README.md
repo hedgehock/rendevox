@@ -1,5 +1,8 @@
 # Rendevox
 
+## TODO
+- [ ] add references to functions
+
 ## Dependencies
 - C99 compiler
 - C standard library
