@@ -6,7 +6,7 @@
 ## Dependencies
 - C99 compiler
 - C standard library
-- SDL2
+- SDL2 and SDL2_ttf
 
 ## Features
 - 3D rendering
