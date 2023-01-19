@@ -42,7 +42,7 @@
 #include "rendevox.h"
 
 int main() {
-	createwindow(1920, 1080);
+	createwindow(1280, 720);
 }
 
 void start() {
