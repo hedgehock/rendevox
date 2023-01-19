@@ -1,7 +1,7 @@
 #include "rendevox.h"
 
 int main() {
-	createWindow(1280, 720, "SDLWINDOW");
+	createWindow(1280, 720, "rendevox window");
 	
 	return 0;
 }
