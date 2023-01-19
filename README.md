@@ -14,26 +14,27 @@
 - collision detection
 - basic physics
 
-## Code
+## Example code
 ```c
 #include "rendevox.h"
 
 int main() {
-	createwindow(1280, 720);
+	createwindow(1280, 720, "rendevox window");
 }
 
 void start() {
-	Object cube = { 0 };
+	entity cube = { 0 };
 	cube.name("Cube1");
-	cube.position = (Vector3){ 0, 0, 0 };
-	cube.mesh = loadmesh("model.obj");
-	addtobuffer(cube);
+	cube.position = (vector3){ 0, 0, 0 };
+	cube.rotation = (vector3){ 0, 0, 0, 0 };
+	cube.mesh = loadMeshFromFile("model.obj");
+	addToEntityBuffer(cube);
 }
 
-void update(int delta) {
-	if(iskeypressed(KEYBOARD_W)) {
-		Object cube = findobject("Cube1");
-		cube.position = vector3add(cube.position, (Vector3){ 0, 0, 1 });
+void update(int deltaSeconds) {
+	if(isKeyPressed(KEYBOARD_W)) {
+		object cube = findEntity("Cube1");
+		cube.position = vector3Add(cube.position, (vector3){ 0, 0, 1 });
 	}
 }
 ```
