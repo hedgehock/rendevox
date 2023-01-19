@@ -11,32 +11,6 @@
 - collision detection
 - basic physics
 
-## Structures
-- ### Vector3
-	- `float x`
-	- `float y`
-	- `float z`
-	- `float w`
-- ### Matrix4
-	- `float m[4][4]`
-- ### Color
-	- `signed char r`
-	- `signed char g`
-	- `signed char b`
-- ### Triangle
-	- `Vector3 points[3]`
-	- `Color color`
-- ### Mesh
-  - `unsigned int size`
-  - `Triangle *triangles`
-- ### Object
-	- `const char* name`
-	- `Vector3 position`
-	- `Vector3 rotation`
-	- `Mesh mesh`
-- ### Font
-  - `TTF_Font *ttf_font`
-
 ## Code
 ```c
 #include "rendevox.h"
