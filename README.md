@@ -45,3 +45,8 @@ void update(int deltaSeconds) {
 ```
 $ run-linux.sh
 ```
+
+### macos
+```
+$ run-macos.sh
+```
