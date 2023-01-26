@@ -1,8 +1,5 @@
 # Rendevox
 
-## TODO
-- [ ] add references to functions
-
 ## Dependencies
 - C99 compiler
 - C standard library
@@ -19,7 +16,7 @@
 #include "rendevox.h"
 
 int main() {
-	createwindow(1280, 720, "rendevox window");
+	rvxCreatewindow("SDL2", 1280, 720, "RVX Window", 0);
 }
 
 void start() {
@@ -40,13 +37,6 @@ void update(int deltaSeconds) {
 ```
 
 ## How to run
-
-### linux
 ```
-$ run-linux.sh
-```
-
-### macos
-```
-$ run-macos.sh
+$ run.sh
 ```
