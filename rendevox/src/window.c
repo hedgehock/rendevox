@@ -44,7 +44,7 @@ void sdl2Loop(window mainWindow) {
         SDL_RenderPresent(mainWindow.sdl_renderer);
 
         // Calculate delta
-        delta = SDL_GetTicks() - start;
+        delta = (int)(SDL_GetTicks() - start);
     }
 }
 
@@ -56,7 +56,7 @@ void rvxCreateWindow(const char* renderType, int width, int height, const char* 
     // NOTE: Create render
 
     // Loop
-    if (renderType == "SDL2") {
+    if (strcmp(renderType, "SDL2") == 0) {
         sdl2Loop(mainWindow);
     }
 
@@ -72,7 +72,7 @@ void createWindow(window *window, const char* renderType, int width, int height,
     window->height = height;
 
     // Do stuff according to render tpe
-    if (renderType == "SDL2") {
+    if (strcmp(renderType, "SDL2") == 0) {
         // Init SDL
         if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
             printf("Can't init SDL");
