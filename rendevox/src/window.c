@@ -4,15 +4,10 @@ int calculateFps(int delta) {
     return round(1000.0f / (float)delta);
 }
 
-void rvxCreateWindow(int width, int height, const char* title, char fullscreen) {
-    // Create window
-    window main_window;
-    create_window(&main_window, width, height, title);
-
-    // Create Render
-    //init_render(main_window);
-
+void sdl2Loop(window mainWindow) {
+    // Create sdl event
     SDL_Event event;
+
     //font main_font = loadFont("../FreeSans.ttf");
 
     // Main loop
@@ -30,8 +25,8 @@ void rvxCreateWindow(int width, int height, const char* title, char fullscreen) 
         }
 
         // Clear the screen
-        SDL_SetRenderDrawColor(main_window.sdl_renderer, 0, 0, 0, 0);
-        SDL_RenderClear(main_window.sdl_renderer);
+        SDL_SetRenderDrawColor(mainWindow.sdl_renderer, 0, 0, 0, 0);
+        SDL_RenderClear(mainWindow.sdl_renderer);
 
         /*
         // Add to buffer
@@ -46,57 +41,74 @@ void rvxCreateWindow(int width, int height, const char* title, char fullscreen) 
          */
 
         // Render buffer
-        SDL_RenderPresent(main_window.sdl_renderer);
+        SDL_RenderPresent(mainWindow.sdl_renderer);
 
         // Calculate delta
         delta = SDL_GetTicks() - start;
     }
-
-    // Destroy window
-    destroy_window(&main_window);
 }
 
-int create_window(window *window, int width, int height, const char *title) {
+void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen) {
+    // Create window
+    window mainWindow;
+    createWindow(&mainWindow, "SDL2", width, height, title);
+
+    // NOTE: Create render
+
+    // Loop
+    if (renderType == "SDL2") {
+        sdl2Loop(mainWindow);
+    }
+
+    // Destroy window
+    // NOTE: Destroy render
+    destroyWindow(&mainWindow);
+}
+
+void createWindow(window *window, const char* renderType, int width, int height, const char *title) {
     // Set window parameters
     window->title = title;
     window->width = width;
     window->height = height;
 
-    // Init SDL
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        printf("Can't init SDL");
-        return 1;
-    }
+    // Do stuff according to render tpe
+    if (renderType == "SDL2") {
+        // Init SDL
+        if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+            printf("Can't init SDL");
+            exit(EXIT_FAILURE);
+        }
 
-    // Create Window and Renderer
-    window->sdl_window = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
-    window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, 0, SDL_RENDERER_PRESENTVSYNC);
-    if (!window->sdl_window) {
-        printf("Can't create window");
-        return 1;
-    }
-    if (!window->sdl_renderer) {
-        printf("Can't create renderer");
-        return 1;
-    }
+        // Create Window and Renderer
+        window->sdl_window = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
+        window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, 0, SDL_RENDERER_PRESENTVSYNC);
 
-    // Set window title
-    SDL_SetWindowTitle(window->sdl_window, title);
+        // Catch errors
+        if (!window->sdl_window) {
+            printf("Can't create window");
+            exit(EXIT_FAILURE);
+        }
+        if (!window->sdl_renderer) {
+            printf("Can't create renderer");
+            exit(EXIT_FAILURE);
+        }
 
-    // Init TTF
-    if (TTF_Init() < 0) {
-        printf("Can't init TTF");
-        return 1;
+        // Set window title
+        SDL_SetWindowTitle(window->sdl_window, title);
+
+        // Init TTF
+        if (TTF_Init() < 0) {
+            printf("Can't init TTF");
+            exit(EXIT_FAILURE);
+        }
     }
-
-    return 0;
 }
 
-void destroy_window(window *window) {
-    // Deinit TTF
+void destroyWindow(window *window) {
+    // DeInit TTF
     TTF_Quit();
 
-    // Deinit SDL
+    // DeInit SDL
     SDL_DestroyRenderer(window->sdl_renderer);
     SDL_DestroyWindow(window->sdl_window);
     SDL_Quit();

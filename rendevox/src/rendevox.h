@@ -5,7 +5,7 @@
 #include <math.h>
 
 // Rendevox
-void rvxCreateWindow(int width, int height, const char* title, char fullscreen);
+void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
 
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
@@ -91,8 +91,8 @@ typedef struct {
     SDL_Renderer *sdl_renderer;
 } window;
 
-int create_window(window *window, int width, int height, const char *title);
-void destroy_window(window *window);
+void createWindow(window *window, const char* renderType, int width, int height, const char *title);
+void destroyWindow(window *window);
 
 // Camera
 float dist(vector3 plane_n, vector3 plane_p, vector3 *p);
