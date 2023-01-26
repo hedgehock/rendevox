@@ -1,69 +1,103 @@
 #include "rendevox.h"
 
-SDL_Window *sdlWindow;
+int calculateFps(int delta) {
+    return round(1000.0f / (float)delta);
+}
 
-int createWindow(int width, int height, const char *title) {
-	// Init SDL
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		printf("ERROR: can't init SDL");
-		return 1;
-	}
+void rvxCreateWindow(int width, int height, const char* title, char fullscreen) {
+    // Create window
+    window main_window;
+    create_window(&main_window, width, height, title);
 
-	// Create window and renderer
-	sdlWindow = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
+    // Create Render
+    //init_render(main_window);
 
-	if (!sdlWindow) {
-		printf("ERROR: can't create window");
-		return 1;
-	}
+    SDL_Event event;
+    //font main_font = loadFont("../FreeSans.ttf");
 
+    // Main loop
+    char running = 0;
+    int delta = 0;
+    while (running == 0) {
+        // Get start delta
+        Uint32 start = SDL_GetTicks();
 
-	// Init TTF
-	if (TTF_Init() < 0) {
-		printf("ERROR: can't init TTF");
-		return 1;
-	}
+        // Input
+        while (SDL_PollEvent(&event) == 1) {
+            if (event.type == SDL_QUIT) {
+                running = 1;
+            }
+        }
 
-	// Call user start function
-	start();
-	
-	// Create render entity buffer
-	createRender(sdlWindow);
+        // Clear the screen
+        SDL_SetRenderDrawColor(main_window.sdl_renderer, 0, 0, 0, 0);
+        SDL_RenderClear(main_window.sdl_renderer);
 
-	SDL_Event sdlEvent;
-	char running = 1;
-	int deltaSeconds = 0;
-	while (running == 1) {
-		// Get start delta
-		Uint32 deltaStart = SDL_GetTicks();
+        /*
+        // Add to buffer
+        render(main_window, delta);
 
-		// Detect if window should close
-		while (SDL_PollEvent(&sdlEvent) == 1) {
-			if (sdlEvent.type == SDL_QUIT) {
-				running = 0;
-			}
-		}
+        // Show FPS
+        char fps_text[16] = "FPS: ";
+        char fps_value[4];
+        snprintf(fps_value, sizeof(fps_value), "%i", calculateFps(delta));
+        strcat(fps_text, fps_value);
+        drawText(main_window.sdl_renderer, 0, 0, fps_text, main_font);
+         */
 
-		// Render
-		render(deltaSeconds);
+        // Render buffer
+        SDL_RenderPresent(main_window.sdl_renderer);
 
-		// Call user update function
-		update(deltaSeconds);
+        // Calculate delta
+        delta = SDL_GetTicks() - start;
+    }
 
+    // Destroy window
+    destroy_window(&main_window);
+}
 
-		// Calculate deltaSeconds
-		deltaSeconds = SDL_GetTicks() - deltaStart;
-	}
+int create_window(window *window, int width, int height, const char *title) {
+    // Set window parameters
+    window->title = title;
+    window->width = width;
+    window->height = height;
 
-	// Destroy entity buffer
-	destroyRender();
+    // Init SDL
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        printf("Can't init SDL");
+        return 1;
+    }
 
-	// Quit TTF
-	TTF_Quit();
+    // Create Window and Renderer
+    window->sdl_window = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
+    window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, 0, SDL_RENDERER_PRESENTVSYNC);
+    if (!window->sdl_window) {
+        printf("Can't create window");
+        return 1;
+    }
+    if (!window->sdl_renderer) {
+        printf("Can't create renderer");
+        return 1;
+    }
 
-	// Quit SDL
-	SDL_DestroyWindow(sdlWindow);
-	SDL_Quit();
+    // Set window title
+    SDL_SetWindowTitle(window->sdl_window, title);
 
-	return 0;
+    // Init TTF
+    if (TTF_Init() < 0) {
+        printf("Can't init TTF");
+        return 1;
+    }
+
+    return 0;
+}
+
+void destroy_window(window *window) {
+    // Deinit TTF
+    TTF_Quit();
+
+    // Deinit SDL
+    SDL_DestroyRenderer(window->sdl_renderer);
+    SDL_DestroyWindow(window->sdl_window);
+    SDL_Quit();
 }
