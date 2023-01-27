@@ -8,7 +8,7 @@ $ install-arch-dependencies.sh
 
 - C99 compiler
 - C standard library
-- Cmake
+- CMake
 - SDL2 and SDL2_ttf
 - Glfw
 - Vulkan
