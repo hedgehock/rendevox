@@ -1,9 +1,17 @@
 # Rendevox
 
 ## Dependencies
+Install script
+```
+$ install-dependencies.sh
+```
+
 - C99 compiler
 - C standard library
+- Cmake
 - SDL2 and SDL2_ttf
+- Glfw
+- Vulkan
 
 ## Features
 - 3D rendering
