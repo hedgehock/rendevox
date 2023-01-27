@@ -93,6 +93,8 @@ typedef struct {
     SDL_Renderer *sdl_renderer;
 } window;
 
+void createSdlWindow(window* window, const char* title);
+void destroySdlWindow(window* window);
 void createWindow(window *window, const char* renderType, int width, int height, const char *title);
 void destroyWindow(window *window);
 

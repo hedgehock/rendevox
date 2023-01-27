@@ -18,4 +18,3 @@ endif()
 
 file(GLOB SRC src/*.c)
 add_executable(rendevox ${SRC})
-
