@@ -102,6 +102,13 @@ void runSDLApp(window window);
 // Vulkan
 void runVulkanApp(window window);
 
+void createVulkanWindow(window window);
+void initVulkan();
+void mainVulkanLoop();
+void cleanupVulkan();
+
+void createVulkanInstance();
+
 // Camera functions
 float dist(vector3 plane_n, vector3 plane_p, vector3 *p);
 int Triangle_ClipAgainstPlane(vector3 plane_p, vector3 plane_n, triangle *in_tri, triangle *out_tri1, triangle *out_tri2);
