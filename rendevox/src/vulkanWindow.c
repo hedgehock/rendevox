@@ -20,6 +20,8 @@ void initVulkan() {
 }
 
 void mainVulkanLoop() {
+
+// GLFW window loop
     while (!glfwWindowShouldClose(vulkanWindow)) {
         glfwPollEvents();
     }
@@ -27,6 +29,7 @@ void mainVulkanLoop() {
 
 void cleanupVulkan() {
     glfwDestroyWindow(vulkanWindow);
+
     glfwTerminate();
 }
 
