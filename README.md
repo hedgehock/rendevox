@@ -1,9 +1,9 @@
 # Rendevox
 
 ## Dependencies
-Install script
+Install script for Arch Linux
 ``` shell
-$ install-dependencies.sh
+$ install-arch-dependencies.sh
 ```
 
 - C99 compiler
