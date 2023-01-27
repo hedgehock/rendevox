@@ -54,6 +54,9 @@ void createVulkanInstance() {
     createInfo.enabledLayerCount = 0;
 
     VkResult result = vkCreateInstance(&createInfo, NULL, &instance);
+
+    // Free memory
+    free(glfwExtensions);
 }
 
 void createVulkanWindow(window window) {

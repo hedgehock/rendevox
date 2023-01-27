@@ -8,15 +8,15 @@ void createSdlWindow(window* window) {
     }
 
     // Create Window and Renderer
-    window->sdl_window = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
-    window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, 0, SDL_RENDERER_PRESENTVSYNC);
+    window->sdlWindow = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
+    window->sdlRenderer = SDL_CreateRenderer(window->sdlWindow, 0, SDL_RENDERER_PRESENTVSYNC);
 
     // Catch errors
-    if (!window->sdl_window) {
+    if (!window->sdlWindow) {
         printf("Can't create window");
         exit(EXIT_FAILURE);
     }
-    if (!window->sdl_renderer) {
+    if (!window->sdlRenderer) {
         printf("Can't create renderer");
         exit(EXIT_FAILURE);
     }
@@ -49,8 +49,8 @@ void sdl2Loop(window window) {
         }
 
         // Clear the screen
-        SDL_SetRenderDrawColor(window.sdl_renderer, 0, 0, 0, 0);
-        SDL_RenderClear(window.sdl_renderer);
+        SDL_SetRenderDrawColor(window.sdlRenderer, 0, 0, 0, 0);
+        SDL_RenderClear(window.sdlRenderer);
 
         /*
         // Add to buffer
@@ -65,7 +65,7 @@ void sdl2Loop(window window) {
          */
 
         // Render buffer
-        SDL_RenderPresent(window.sdl_renderer);
+        SDL_RenderPresent(window.sdlRenderer);
 
         // Calculate delta
         delta = (int)(SDL_GetTicks() - start);
@@ -77,8 +77,8 @@ void destroySdlWindow(window *window) {
     TTF_Quit();
 
     // DeInit SDL
-    SDL_DestroyRenderer(window->sdl_renderer);
-    SDL_DestroyWindow(window->sdl_window);
+    SDL_DestroyRenderer(window->sdlRenderer);
+    SDL_DestroyWindow(window->sdlWindow);
     SDL_Quit();
 }
 
