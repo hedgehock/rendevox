@@ -2,7 +2,7 @@
 
 ## Dependencies
 Install script
-```
+``` shell
 $ install-dependencies.sh
 ```
 
@@ -45,6 +45,6 @@ void update(int deltaSeconds) {
 ```
 
 ## How to run
-```
+``` shell
 $ run.sh
 ```
