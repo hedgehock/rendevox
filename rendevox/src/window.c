@@ -49,67 +49,24 @@ void sdl2Loop(window mainWindow) {
 }
 
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen) {
-    // Create window
-    window mainWindow;
-    createWindow(&mainWindow, "SDL2", width, height, title);
+    // Define Window
+    window window;
+    window.title = title;
+    window.width = width;
+    window.height = height;
 
-    // NOTE: Create render
+    // Create window
+    if (strcmp(renderType, "SDL2") == 0) {
+        createSdlWindow(&window, title);
+    }
 
     // Loop
     if (strcmp(renderType, "SDL2") == 0) {
-        sdl2Loop(mainWindow);
+        sdl2Loop(window);
     }
 
     // Destroy window
-    // NOTE: Destroy render
-    destroyWindow(&mainWindow);
-}
-
-void createWindow(window *window, const char* renderType, int width, int height, const char *title) {
-    // Set window parameters
-    window->title = title;
-    window->width = width;
-    window->height = height;
-
-    // Do stuff according to render tpe
     if (strcmp(renderType, "SDL2") == 0) {
-        // Init SDL
-        if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-            printf("Can't init SDL");
-            exit(EXIT_FAILURE);
-        }
-
-        // Create Window and Renderer
-        window->sdl_window = SDL_CreateWindow(window->title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->width, window->height, 0);
-        window->sdl_renderer = SDL_CreateRenderer(window->sdl_window, 0, SDL_RENDERER_PRESENTVSYNC);
-
-        // Catch errors
-        if (!window->sdl_window) {
-            printf("Can't create window");
-            exit(EXIT_FAILURE);
-        }
-        if (!window->sdl_renderer) {
-            printf("Can't create renderer");
-            exit(EXIT_FAILURE);
-        }
-
-        // Set window title
-        SDL_SetWindowTitle(window->sdl_window, title);
-
-        // Init TTF
-        if (TTF_Init() < 0) {
-            printf("Can't init TTF");
-            exit(EXIT_FAILURE);
-        }
+        destroySdlWindow(&window);
     }
-}
-
-void destroyWindow(window *window) {
-    // DeInit TTF
-    TTF_Quit();
-
-    // DeInit SDL
-    SDL_DestroyRenderer(window->sdl_renderer);
-    SDL_DestroyWindow(window->sdl_window);
-    SDL_Quit();
 }
