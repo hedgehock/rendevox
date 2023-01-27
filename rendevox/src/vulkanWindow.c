@@ -4,14 +4,15 @@
 
 #include <GLFW/glfw3.h>
 
-uint32_t WIDTH;
-uint32_t HEIGHT;
-
 GLFWwindow* vulkanWindow;
 
-void createVulkanWindow() {
+void createVulkanWindow(window window) {
     glfwInit();
 
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
 }
 
 void initVulkan() {
@@ -19,15 +20,18 @@ void initVulkan() {
 }
 
 void mainVulkanLoop() {
-
+    while (!glfwWindowShouldClose(vulkanWindow)) {
+        glfwPollEvents();
+    }
 }
 
 void cleanupVulkan() {
     glfwDestroyWindow(vulkanWindow);
+    glfwTerminate();
 }
 
-void runVulkanApp() {
-    createVulkanWindow();
+void runVulkanApp(window window) {
+    createVulkanWindow(window);
     initVulkan();
     mainVulkanLoop();
     cleanupVulkan();

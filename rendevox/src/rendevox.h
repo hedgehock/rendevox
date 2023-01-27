@@ -7,18 +7,17 @@
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
 
-void runVulkanApp();
-
+// min and max functions are not in standard C library
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
 
-// Vector2
+// Vector2 declaration
 typedef struct {
     float x;
     float y;
 } vector2;
 
-// Vector3
+// Vector3 declaration
 typedef struct {
     float x;
     float y;
@@ -26,6 +25,7 @@ typedef struct {
     float w;
 } vector3;
 
+// Vector3 functions
 vector3 vector_add(vector3 *v1, vector3 *v2);
 vector3 vector_sub(vector3 *v1, vector3 *v2);
 vector3 vector_mul(vector3 *v1, float k);
@@ -36,7 +36,7 @@ vector3 vector_normalise(vector3 *v);
 vector3 vector_cross_product(vector3 *v1, vector3 *v2);
 vector3 vector_intersect_plane(vector3 *plane_p, vector3 *plane_n, vector3 *line_start, vector3 *line_end);
 
-// Color
+// Color declaration
 typedef struct {
     signed char r;
     signed char g;
@@ -44,17 +44,18 @@ typedef struct {
     signed char a;
 } color;
 
-// Triangle
+// Triangle declaration
 typedef struct {
     vector3 p[3];
     color c;
 } triangle;
 
-// Matrix4
+// Matrix4 declaration
 typedef struct {
     float m[4][4];
 } matrix4;
 
+// Matrix4 functions
 void init_matrix(matrix4* m);
 vector3 matrix_multiply_vector(matrix4 *m, vector3 *i);
 matrix4 matrix_make_identity();
@@ -67,23 +68,25 @@ matrix4 matrix_multiply_matrix(matrix4 *m1, matrix4 *m2);
 matrix4 matrix_point_at(vector3 *pos, vector3 *target, vector3 *up);
 matrix4 matrix_quick_inverse(matrix4 *m);
 
-// Mesh
+// Mesh declaration
 typedef struct {
     int size;
     triangle *t;
 } mesh;
 
+// Mesh functions
 void init_mesh(mesh *mesh);
 int load_file(mesh *mesh, const char *path);
 
-// Font
+// Font declaration
 typedef struct {
     TTF_Font *ttfFont;
 } font;
 
+// Font functions
 font loadFont(const char* path);
 
-// Window
+// Window declaration
 typedef struct {
     const char* title;
     int width;
@@ -93,24 +96,17 @@ typedef struct {
     SDL_Renderer *sdl_renderer;
 } window;
 
-void createSdlWindow(window* window, const char* title);
-void destroySdlWindow(window* window);
-void createWindow(window *window, const char* renderType, int width, int height, const char *title);
-void destroyWindow(window *window);
+// SDL2
+void runSDLApp(window window);
 
-// Camera
+// Vulkan
+void runVulkanApp(window window);
+
+// Camera functions
 float dist(vector3 plane_n, vector3 plane_p, vector3 *p);
 int Triangle_ClipAgainstPlane(vector3 plane_p, vector3 plane_n, triangle *in_tri, triangle *out_tri1, triangle *out_tri2);
 
-// Sorting
+// Sorting functions
 void swap(triangle *a, triangle *b);
 int partition(triangle arr[], int low, int high);
 void quickSort(triangle arr[], int low, int high);
-
-// Drawing
-void draw_triangle(SDL_Renderer *renderer, vector2 v1, vector2 v2, vector2 v3, color color);
-void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
-
-// Render
-int init_render(window window);
-void render(window window, int delta);
