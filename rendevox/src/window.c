@@ -101,6 +101,8 @@ void createWindow(window *window, const char* renderType, int width, int height,
             printf("Can't init TTF");
             exit(EXIT_FAILURE);
         }
+    } else if (strcmp(renderType, "Vulkan") == 0) {
+        runVulkanApp();
     }
 }
 

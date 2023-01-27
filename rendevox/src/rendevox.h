@@ -7,6 +7,8 @@
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
 
+void runVulkanApp();
+
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
 
