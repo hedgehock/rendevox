@@ -1,7 +1,7 @@
 # Rendevox
 
 ## Dependencies
-Install script for Arch Linux
+Install script for Arch Linux (xorg display server)
 ``` shell
 $ install-arch-dependencies.sh
 ```
