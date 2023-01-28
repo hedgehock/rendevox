@@ -7,11 +7,13 @@
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
 
+// ----------
+// Data types
+// ----------
+
 // min and max functions are not in standard C library
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
-
-// // Data types
 
 // Vector2 declaration
 typedef struct {
@@ -98,7 +100,9 @@ typedef struct {
     SDL_Renderer *sdlRenderer;
 } window;
 
-// // Rendering
+// ---------
+// Rendering
+// ---------
 
 // SDL2
 void runSDLApp(window window);
@@ -113,7 +117,9 @@ void cleanupVulkan();
 
 void createVulkanInstance();
 
-// // Utilities
+// ---------
+// Utilities
+// ---------
 
 // Sorting functions
 void swap(triangle *a, triangle *b);
