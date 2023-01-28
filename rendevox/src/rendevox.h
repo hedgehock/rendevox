@@ -58,18 +58,18 @@ typedef struct {
 } matrix4;
 
 // Vector3 function that requires matrix4
-vector3 matrixMultiplyVector3(matrix4 *m, vector3 *i);
+vector3 matrix4MultiplyVector3(matrix4 *m, vector3 *i);
 
 // Matrix4 functions
-matrix4 matrixMakeIdentity();
-matrix4 matrixMakeRotationX(float angleRad);
-matrix4 matrixMakeRotationY(float angleRad);
-matrix4 matrixMakeRotationZ(float angleRad);
-matrix4 matrixMakeTranslation(float x, float y, float z);
-matrix4 matrixMakeProjection(float fovDegrees, float aspectRatio, float near, float far);
-matrix4 matrixMultiplyMatrix(matrix4 *m1, matrix4 *m2);
-matrix4 matrixPointAt(vector3 *pos, vector3 *target, vector3 *up);
-matrix4 matrixQuickInverse(matrix4 *m);
+matrix4 matrix4MakeIdentity();
+matrix4 matrix4MakeRotationX(float angleRad);
+matrix4 matrix4MakeRotationY(float angleRad);
+matrix4 matrix4MakeRotationZ(float angleRad);
+matrix4 matrix4MakeTranslation(float x, float y, float z);
+matrix4 matrix4MakeProjection(float fovDegrees, float aspectRatio, float near, float far);
+matrix4 matrix4MultiplyMatrix(matrix4 *m1, matrix4 *m2);
+matrix4 matrix4PointAt(vector3 *pos, vector3 *target, vector3 *up);
+matrix4 matrix4QuickInverse(matrix4 *m);
 
 // Mesh declaration
 typedef struct {
