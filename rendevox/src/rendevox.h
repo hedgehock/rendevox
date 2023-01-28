@@ -78,8 +78,7 @@ typedef struct {
 } mesh;
 
 // Mesh functions
-void initMesh(mesh *mesh);
-int loadFile(mesh *mesh, const char *path);
+void loadMeshFromFile(mesh *m, const char *path);
 
 // Font declaration
 typedef struct {
