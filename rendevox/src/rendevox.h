@@ -80,7 +80,7 @@ typedef struct {
 } mesh;
 
 // Mesh functions
-void loadMeshFromFile(mesh *m, const char *path);
+mesh loadMeshFromFile(const char* path);
 
 // Font declaration
 typedef struct {

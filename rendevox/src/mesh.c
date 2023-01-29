@@ -1,75 +1,88 @@
 #include "rendevox.h"
 
-void addTriangleToMesh(mesh *m, triangle t) {
-    m->t = realloc(m->t, sizeof(triangle) * (m->size + 1));
-    m->t[m->size] = t;
-    m->size++;
-}
+mesh loadMeshFromFile(const char* path) {
+    FILE *f;
 
-void loadMeshFromFile(mesh *m, const char *path) {
-    m->size = 0;
-    m->t = malloc(sizeof(triangle));;
+    f = fopen(path, "r");
 
-    FILE *file;
-    char line[32];
-
-    file = fopen(path, "r");
-    if (file == NULL) {
+    if (f == NULL) {
         printf("Can't load fire from desired path");
         exit(EXIT_FAILURE);
     }
 
-    char vCount = 0, fCount = 0;
+    char lineBuff[64];
 
-    vector3 *tempVectors = malloc(sizeof(vector3));
-    int tempVectorsSize = 0;
-    triangle tempTriangle;
+    char vertexCount = 0;
+    char faceCount = 0;
 
-    while (fscanf(file, " %31s", line) == 1) {
-        if (vCount > 0) {
-            if (vCount == 3) tempVectors[tempVectorsSize].x = atof(line);
-            if (vCount == 2) tempVectors[tempVectorsSize].y = atof(line);
-            if (vCount == 1) {
-                // Reallocate +2 vectors to have space for the next
-                tempVectors = realloc(tempVectors, sizeof(vector3) * (tempVectorsSize + 2));
+    vector3 *vBuff = malloc(sizeof(vector3));
+    unsigned int vBuffSize = 0;
 
-                tempVectors[tempVectorsSize].z = atof(line);
+    mesh tempMesh;
+    tempMesh.size = 0;
+    tempMesh.t = malloc(sizeof(triangle));
 
-                tempVectorsSize++;
+    while (fscanf(f, " %63s", lineBuff) == 1) {
+        if (vertexCount > 0) {
+            if (vertexCount == 3) {
+                vBuff[vBuffSize].x = atof(lineBuff);
+            }
+            else if (vertexCount == 2) {
+                vBuff[vBuffSize].y = atof(lineBuff);
+            }
+            else if (vertexCount == 1) {
+                vBuff[vBuffSize].z = atof(lineBuff);
+
+                vBuffSize += 1;
+                vBuff = realloc(vBuff, sizeof(vector3) * (vBuffSize + 1));
             }
 
-            // Decrease vector count to append next property
-            vCount--;
+            vertexCount -= 1;
         }
-        else if (fCount > 0) {
-            if (fCount == 3) tempTriangle.p[0] = tempVectors[atoi(line)];
-            if (fCount == 2) tempTriangle.p[1] = tempVectors[atoi(line)];
-            if (fCount == 1) {
-                tempTriangle.p[2] = tempVectors[atoi(line)];
+        if (faceCount > 0) {
+            if (faceCount == 3) {
+                tempMesh.t[tempMesh.size].p[0] = vBuff[atoi(lineBuff) - 1];
+            }
+            else if (faceCount == 2) {
+                tempMesh.t[tempMesh.size].p[1] = vBuff[atoi(lineBuff) - 1];
+            }
+            else if (faceCount == 1) {
+                tempMesh.t[tempMesh.size].p[2] = vBuff[atoi(lineBuff) - 1];
 
-                // Set triangle w properties
-                tempTriangle.p[0].w = 1.0f;
-                tempTriangle.p[1].w = 1.0f;
-                tempTriangle.p[2].w = 1.0f;
+                tempMesh.t[tempMesh.size].p[0].w = 1.0f;
+                tempMesh.t[tempMesh.size].p[1].w = 1.0f;
+                tempMesh.t[tempMesh.size].p[2].w = 1.0f;
 
-                // Append triangle to mesh
-                addTriangleToMesh(m, tempTriangle);
+                tempMesh.size += 1;
+                tempMesh.t = realloc(tempMesh.t, sizeof(triangle) * (tempMesh.size + 1));
             }
 
-            // Decrease faces count to append next point of the triangle
-            fCount--;
+            faceCount -= 1;
+        }
+        else if (strcmp(lineBuff, "v") == 0) {
+            vertexCount = 3;
+        }
+        else if (strcmp(lineBuff, "f") == 0) {
+            faceCount = 3;
         }
         else {
-            if (line[0] == 'v') {
-                vCount = 3;
-            }
-            else if (line[0] == 'f') {
-                fCount = 3;
-            }
+            printf("%s ", lineBuff);
         }
     }
 
-    // Free memory
-    fclose(file);
-    free(tempVectors);
+    for (int i = 0; i < vBuffSize; i++) {
+        printf("\nvector3 | %f %f %f", vBuff[i].x, vBuff[i].y, vBuff[i].z);
+    }
+
+    for (int i = 0; i < tempMesh.size; i++) {
+        printf("\n-- Triangle --");
+        printf("\np1: %f %f %f", tempMesh.t[i].p[0].x, tempMesh.t[i].p[0].y, tempMesh.t[i].p[0].z);
+        printf("\np2: %f %f %f", tempMesh.t[i].p[1].x, tempMesh.t[i].p[1].y, tempMesh.t[i].p[1].z);
+        printf("\np3: %f %f %f", tempMesh.t[i].p[2].x, tempMesh.t[i].p[2].y, tempMesh.t[i].p[2].z);
+    }
+
+    free(vBuff);
+    fclose(f);
+
+    return tempMesh;
 }
