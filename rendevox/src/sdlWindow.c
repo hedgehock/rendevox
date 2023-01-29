@@ -1,5 +1,11 @@
 #include "rendevox.h"
 
+font main_font;
+
+int calculateFps(int delta) {
+    return round(1000.0f / (float)delta);
+}
+
 void createSdlWindow(window* window) {
     // Init SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -26,17 +32,17 @@ void createSdlWindow(window* window) {
         printf("Can't init TTF");
         exit(EXIT_FAILURE);
     }
+
+    main_font = sdlLoadFont("../resources/FreeSans.ttf");
 }
 
+// Create sdl event
+SDL_Event event;
+
+char running = 0;
+int delta = 0;
+
 void sdl2Loop(window window) {
-    // Create sdl event
-    SDL_Event event;
-
-    //font main_font = loadFont("../FreeSans.ttf");
-
-    // Main loop
-    char running = 0;
-    int delta = 0;
     while (running == 0) {
         // Get start delta
         Uint32 start = SDL_GetTicks();
@@ -52,17 +58,20 @@ void sdl2Loop(window window) {
         SDL_SetRenderDrawColor(window.sdlRenderer, 0, 0, 0, 0);
         SDL_RenderClear(window.sdlRenderer);
 
-        /*
-        // Add to buffer
-        render(main_window, delta);
+        // -------------
+        // Temp entities
+        // -------------
 
         // Show FPS
         char fps_text[16] = "FPS: ";
         char fps_value[4];
         snprintf(fps_value, sizeof(fps_value), "%i", calculateFps(delta));
         strcat(fps_text, fps_value);
-        drawText(main_window.sdl_renderer, 0, 0, fps_text, main_font);
-         */
+        drawText(window.sdlRenderer, 0, 0, fps_text, main_font);
+
+        // Test triangle
+        drawTriangle(window.sdlRenderer, (vector2){ 200.0f, 200.0f }, (vector2) { 300.0f, 300.0f},
+                     (vector2){ 300.0f, 200.0f}, (color){ (char)255, (char)255, (char)255, (char)255});
 
         // Render buffer
         SDL_RenderPresent(window.sdlRenderer);

@@ -88,7 +88,7 @@ typedef struct {
 } font;
 
 // Font functions
-font loadFont(const char* path);
+font sdlLoadFont(const char* path);
 
 // Window declaration
 typedef struct {
@@ -104,8 +104,12 @@ typedef struct {
 // Rendering
 // ---------
 
-// SDL2
+// SDL2 window
 void runSDLApp(window window);
+
+// SDL 2 drawing
+void drawTriangle(SDL_Renderer *renderer, vector2 v1, vector2 v2, vector2 v3, color color);
+void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 
 // Vulkan
 void runVulkanApp(window window);
