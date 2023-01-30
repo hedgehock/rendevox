@@ -17,7 +17,6 @@ void rvxCreateWindow(const char* renderType, int width, int height, const char* 
 #define max(a,b) (((a)>(b))?(a):(b))
 
 // Boolean
-
 typedef enum {
     false = 0,
     true
