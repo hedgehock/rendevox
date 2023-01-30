@@ -19,6 +19,13 @@ $ install-arch-dependencies.sh
 - collision detection
 - basic physics
 
+## msys2 mingw64 dependencies
+- mingw-w64-x86_64-SDL2_ttf
+- mingw-w64-x86_64-glfw
+- mingw-w64-x86_64-vulkan-devel
+- mingw-w64-x86_64-kf5
+- mingw-w64-x86_64-toolchain
+
 ## Example code
 ```c
 #include "rendevox.h"
