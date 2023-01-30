@@ -53,10 +53,7 @@ void createVulkanInstance() {
     createInfo.ppEnabledExtensionNames = (const char *const *) glfwExtensions;
     createInfo.enabledLayerCount = 0;
 
-    VkResult result = vkCreateInstance(&createInfo, NULL, &instance);
-
-    // Free memory
-    free(glfwExtensions);
+    VkResult result = vkCreateInstance(&createInfo, NULL, (VkInstance *) instance);
 }
 
 void createVulkanWindow(window window) {
