@@ -74,6 +74,6 @@ void vulkanCreateInstance() {
 
 void vulkanPickPhysicalDevice() {
 
-// Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
+    // Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 }
