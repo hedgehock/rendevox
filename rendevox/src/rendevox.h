@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <vulkan/vulkan.h>
 
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
@@ -14,6 +15,13 @@ void rvxCreateWindow(const char* renderType, int width, int height, const char* 
 // min and max functions are not in standard C library
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
+
+// Boolean
+
+typedef enum {
+    false = 0,
+    true
+} bool;
 
 // Vector2 declaration
 typedef struct {
@@ -123,6 +131,9 @@ void vulkanCleanup();
 // Vulkan initialisation functions
 void vulkanCreateInstance();
 void vulkanPickPhysicalDevice();
+
+// Vulkan Pick Physical Device Functions
+bool isDeviceSuitable(VkPhysicalDevice device);
 
 // ---------
 // Utilities

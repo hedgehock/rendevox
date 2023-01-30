@@ -75,4 +75,31 @@ void vulkanCreateInstance() {
 void vulkanPickPhysicalDevice() {
     // Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
+
+    if (deviceCount == 0) {
+        fprintf(stderr, "%s", "Failed to find GPUs with Vulkan support!");
+    }
+
+    VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
+
+    // Choose suitable GPU
+    for (int i = 0; i < deviceCount; ++i) {
+        if (isDeviceSuitable(devices[i])) {
+            physicalDevice = devices[i];
+            break;
+        }
+    }
+
+    if (physicalDevice == VK_NULL_HANDLE){
+        fprintf(stderr, "%s", "Failed to find suitable GPU!");
+    }
+
+}
+
+bool isDeviceSuitable(VkPhysicalDevice device) {
+    return true;
 }
