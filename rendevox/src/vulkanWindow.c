@@ -28,8 +28,7 @@ void vulkanCreateWindow(window window) {
 }
 
 void vulkanMainLoop() {
-
-// GLFW window loop
+    // GLFW window loop
     while (!glfwWindowShouldClose(vulkanWindow)) {
         glfwPollEvents();
     }
@@ -44,8 +43,7 @@ void vulkanCleanup() {
 }
 
 void vulkanCreateInstance() {
-
-// Information about application
+    // Information about application
     VkApplicationInfo appInfo = {0};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Hello triangle";
@@ -54,7 +52,7 @@ void vulkanCreateInstance() {
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-// Information about instance
+    // Information about instance
     VkInstanceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
@@ -62,7 +60,7 @@ void vulkanCreateInstance() {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
-// Get GLFW extensions
+    // Get GLFW extensions
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
     createInfo.enabledExtensionCount = glfwExtensionCount;
