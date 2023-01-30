@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 
 GLFWwindow* vulkanWindow;
-
 VkInstance instance;
 
 void runVulkanApp(window window) {
@@ -30,7 +29,7 @@ void initVulkan() {
 void createVulkanInstance() {
 
 // Information about application
-    VkApplicationInfo appInfo;
+    VkApplicationInfo appInfo = {0};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Hello triangle";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -39,7 +38,7 @@ void createVulkanInstance() {
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
 // Information about instance
-    VkInstanceCreateInfo createInfo;
+    VkInstanceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
