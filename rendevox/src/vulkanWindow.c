@@ -32,9 +32,9 @@ void createVulkanInstance() {
 // Information about application
     VkApplicationInfo appInfo;
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "rendevox engine in Vulkan";
+    appInfo.pApplicationName = "Hello triangle";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "rendevox";
+    appInfo.pEngineName = "No Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
@@ -44,16 +44,18 @@ void createVulkanInstance() {
     createInfo.pApplicationInfo = &appInfo;
 
     uint32_t glfwExtensionCount = 0;
-    char** glfwExtensions;
+    const char** glfwExtensions;
 
 // Get GLFW extensions
-    glfwExtensions = (char **) glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
     createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = (const char *const *) glfwExtensions;
+    createInfo.ppEnabledExtensionNames = glfwExtensions;
     createInfo.enabledLayerCount = 0;
 
-    VkResult result = vkCreateInstance(&createInfo, NULL, (VkInstance *) instance);
+    if (vkCreateInstance(&createInfo, NULL, &instance) != VK_SUCCESS) {
+        fprintf(stderr, "%s", "Cannot create Vulkan instance!");
+    }
 }
 
 void createVulkanWindow(window window) {

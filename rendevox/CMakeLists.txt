@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.24)
 project(rendevox C)
 
 set(CMAKE_C_STANDARD 99)
@@ -23,5 +23,6 @@ elseif(WIN32)
 endif()
 
 file(GLOB SRC src/*.c)
+add_executable(rendevox)
 
-add_executable(rendevox ${SRC})
+target_sources(rendevox PRIVATE main.c ${SRC})
