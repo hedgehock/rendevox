@@ -105,14 +105,14 @@ typedef struct {
 // ---------
 
 // SDL2 window
-void SDLRunApp(window window);
+void runSDLApp(window window);
 
 // SDL 2 drawing
 void drawTriangle(SDL_Renderer *renderer, vector2 v1, vector2 v2, vector2 v3, color color);
 void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 
 // Vulkan
-void vulkanRunApp(window window);
+void runVulkanApp(window window);
 
 // Vulkan main functions
 void vulkanCreateWindow(window window);

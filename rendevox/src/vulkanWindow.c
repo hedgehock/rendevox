@@ -7,7 +7,7 @@
 GLFWwindow* vulkanWindow;
 VkInstance instance;
 
-void vulkanRunApp(window window) {
+void runVulkanApp(window window) {
     vulkanCreateWindow(window);
     vulkanInit();
     vulkanMainLoop();
