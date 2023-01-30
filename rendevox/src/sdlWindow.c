@@ -91,7 +91,7 @@ void destroySdlWindow(window *window) {
     SDL_Quit();
 }
 
-void runSDLApp(window window) {
+void SDLRunApp(window window) {
     createSdlWindow(&window);
     sdl2Loop(window);
     destroySdlWindow(&window);

@@ -7,14 +7,27 @@
 GLFWwindow* vulkanWindow;
 VkInstance instance;
 
-void runVulkanApp(window window) {
-    createVulkanWindow(window);
-    initVulkan();
-    mainVulkanLoop();
-    cleanupVulkan();
+void vulkanRunApp(window window) {
+    vulkanCreateWindow(window);
+    vulkanInit();
+    vulkanMainLoop();
+    vulkanCleanup();
 }
 
-void mainVulkanLoop() {
+void vulkanInit() {
+    vulkanCreateInstance();
+    vulkanPickPhysicalDevice();
+}
+void vulkanCreateWindow(window window) {
+    glfwInit();
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
+}
+
+void vulkanMainLoop() {
 
 // GLFW window loop
     while (!glfwWindowShouldClose(vulkanWindow)) {
@@ -22,11 +35,15 @@ void mainVulkanLoop() {
     }
 }
 
-void initVulkan() {
-    createVulkanInstance();
+void vulkanCleanup() {
+    vkDestroyInstance(instance, NULL);
+
+    glfwDestroyWindow(vulkanWindow);
+
+    glfwTerminate();
 }
 
-void createVulkanInstance() {
+void vulkanCreateInstance() {
 
 // Information about application
     VkApplicationInfo appInfo = {0};
@@ -57,19 +74,8 @@ void createVulkanInstance() {
     }
 }
 
-void createVulkanWindow(window window) {
-    glfwInit();
+void vulkanPickPhysicalDevice() {
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-    vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
-}
-
-void cleanupVulkan() {
-    vkDestroyInstance(instance, NULL);
-
-    glfwDestroyWindow(vulkanWindow);
-
-    glfwTerminate();
+// Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 }

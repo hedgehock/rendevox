@@ -9,8 +9,8 @@ void rvxCreateWindow(const char* renderType, int width, int height, const char* 
 
     // Create window
     if (strcmp(renderType, "SDL2") == 0) {
-        runSDLApp(window);
+        SDLRunApp(window);
     } else if (strcmp(renderType, "Vulkan") == 0) {
-        runVulkanApp(window);
+        vulkanRunApp(window);
     }
 }
