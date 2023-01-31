@@ -8,24 +8,41 @@ GLFWwindow* vulkanWindow;
 VkInstance instance;
 
 void runVulkanApp(window window) {
-    createVulkanWindow(window);
-    initVulkan();
-    mainVulkanLoop();
-    cleanupVulkan();
+    vulkanCreateWindow(window);
+    vulkanInit();
+    vulkanMainLoop();
+    vulkanCleanup();
 }
 
-void mainVulkanLoop() {
+void vulkanInit() {
+    vulkanCreateInstance();
+    vulkanPickPhysicalDevice();
+}
+void vulkanCreateWindow(window window) {
+    glfwInit();
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
+}
+
+void vulkanMainLoop() {
     // GLFW window loop
     while (!glfwWindowShouldClose(vulkanWindow)) {
         glfwPollEvents();
     }
 }
 
-void initVulkan() {
-    createVulkanInstance();
+void vulkanCleanup() {
+    vkDestroyInstance(instance, NULL);
+    
+    glfwDestroyWindow(vulkanWindow);
+
+    glfwTerminate();
 }
 
-void createVulkanInstance() {
+void vulkanCreateInstance() {
     // Information about application
     VkApplicationInfo appInfo = { 0 };
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -55,19 +72,34 @@ void createVulkanInstance() {
     }
 }
 
-void createVulkanWindow(window window) {
-    glfwInit();
+void vulkanPickPhysicalDevice() {
+    // Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
 
-    vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
+    if (deviceCount == 0) {
+        fprintf(stderr, "%s", "Failed to find GPUs with Vulkan support!");
+    }
+
+    VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
+
+    // Choose suitable GPU
+    for (int i = 0; i < deviceCount; ++i) {
+        if (isDeviceSuitable(devices[i])) {
+            physicalDevice = devices[i];
+            break;
+        }
+    }
+
+    if (physicalDevice == VK_NULL_HANDLE){
+        fprintf(stderr, "%s", "Failed to find suitable GPU!");
+    }
+
 }
 
-void cleanupVulkan() {
-    vkDestroyInstance(instance, NULL);
-
-    glfwDestroyWindow(vulkanWindow);
-
-    glfwTerminate();
+bool isDeviceSuitable(VkPhysicalDevice device) {
+    return true;
 }

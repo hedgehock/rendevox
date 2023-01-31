@@ -1,8 +1,10 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
+#include <vulkan/vulkan.h>
 
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
@@ -114,12 +116,18 @@ void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 // Vulkan
 void runVulkanApp(window window);
 
-void createVulkanWindow(window window);
-void initVulkan();
-void mainVulkanLoop();
-void cleanupVulkan();
+// Vulkan main functions
+void vulkanCreateWindow(window window);
+void vulkanInit();
+void vulkanMainLoop();
+void vulkanCleanup();
 
-void createVulkanInstance();
+// Vulkan initialisation functions
+void vulkanCreateInstance();
+void vulkanPickPhysicalDevice();
+
+// Vulkan Pick Physical Device Functions
+bool isDeviceSuitable(VkPhysicalDevice device);
 
 // ---------
 // Utilities
