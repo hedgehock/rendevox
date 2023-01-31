@@ -36,7 +36,7 @@ void vulkanMainLoop() {
 
 void vulkanCleanup() {
     vkDestroyInstance(instance, NULL);
-
+    
     glfwDestroyWindow(vulkanWindow);
 
     glfwTerminate();
