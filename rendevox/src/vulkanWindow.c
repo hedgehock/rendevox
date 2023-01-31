@@ -44,16 +44,16 @@ void vulkanCleanup() {
 
 void vulkanCreateInstance() {
     // Information about application
-    VkApplicationInfo appInfo = {0};
+    VkApplicationInfo appInfo = { 0 };
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Hello triangle";
+    appInfo.pApplicationName = "rendevox";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.pEngineName = "No Engine";
+    appInfo.pEngineName = "rendevox";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
     // Information about instance
-    VkInstanceCreateInfo createInfo = {0};
+    VkInstanceCreateInfo createInfo = { 0 };
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
