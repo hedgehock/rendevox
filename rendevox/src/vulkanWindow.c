@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-GLFWwindow* vulkanWindow;
+GLFWwindow *vulkanWindow;
 VkInstance instance;
 
 void runVulkanApp(window window) {
@@ -18,6 +18,7 @@ void vulkanInit() {
     vulkanCreateInstance();
     vulkanPickPhysicalDevice();
 }
+
 void vulkanCreateWindow(window window) {
     glfwInit();
 
@@ -36,7 +37,7 @@ void vulkanMainLoop() {
 
 void vulkanCleanup() {
     vkDestroyInstance(instance, NULL);
-    
+
     glfwDestroyWindow(vulkanWindow);
 
     glfwTerminate();
@@ -44,7 +45,7 @@ void vulkanCleanup() {
 
 void vulkanCreateInstance() {
     // Information about application
-    VkApplicationInfo appInfo = { 0 };
+    VkApplicationInfo appInfo = {0};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "rendevox";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -53,12 +54,12 @@ void vulkanCreateInstance() {
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
     // Information about instance
-    VkInstanceCreateInfo createInfo = { 0 };
+    VkInstanceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
     uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
+    const char **glfwExtensions;
 
     // Get GLFW extensions
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -83,7 +84,7 @@ void vulkanPickPhysicalDevice() {
         fprintf(stderr, "%s", "Failed to find GPUs with Vulkan support!");
     }
 
-    VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
+    VkPhysicalDevice *devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
 
     // Choose suitable GPU
@@ -94,12 +95,19 @@ void vulkanPickPhysicalDevice() {
         }
     }
 
-    if (physicalDevice == VK_NULL_HANDLE){
+    if (physicalDevice == VK_NULL_HANDLE) {
         fprintf(stderr, "%s", "Failed to find suitable GPU!");
     }
-
 }
 
 bool isDeviceSuitable(VkPhysicalDevice device) {
-    return true;
+    // Get GPU properties and features
+    VkPhysicalDeviceProperties deviceProperties;
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+    // Support only for dedicated GPU and Integrated GPU with geometry shaders support
+    return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
+    deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader;
 }
