@@ -102,6 +102,12 @@ typedef struct {
     SDL_Renderer *sdlRenderer;
 } window;
 
+// Vulkan
+
+typedef struct {
+    uint32_t graphicsFamily;
+} vulkanQueueFamilyIndices;
+
 // ---------
 // Rendering
 // ---------
@@ -128,6 +134,8 @@ void vulkanPickPhysicalDevice();
 
 // Vulkan Pick Physical Device Functions
 bool isDeviceSuitable(VkPhysicalDevice device);
+
+vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 // ---------
 // Utilities
