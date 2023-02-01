@@ -77,6 +77,8 @@ void vulkanCreateInstance() {
 
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
+
+    // Validation layer count (In newer versions of Vulkan are validation layers not required)
     createInfo.enabledLayerCount = 0;
 
     if (vkCreateInstance(&createInfo, NULL, &instance) != VK_SUCCESS) {
@@ -166,6 +168,7 @@ void vulkanCreateLogicalDevice() {
     createInfo.pQueueCreateInfos = &queueCreateInfo;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = 1;
+    createInfo.enabledLayerCount = 0;
 
     if (vkCreateDevice(physicalDevice, &createInfo, NULL, &logicalDevice) != VK_SUCCESS) {
         vulkanError("Failed to create logical device!");
