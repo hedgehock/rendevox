@@ -9,7 +9,7 @@ void rvxCreateWindow(const char* renderType, int width, int height, const char* 
 
     // Create window
     if (strcmp(renderType, "OpenGL") == 0) {
-        runOpenGLApp(window);
+        runOpenglApp(window);
     }
     else if (strcmp(renderType, "Vulkan") == 0) {
         runVulkanApp(window);

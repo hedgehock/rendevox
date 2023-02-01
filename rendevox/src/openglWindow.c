@@ -33,7 +33,7 @@ unsigned int VAO;
 unsigned int VBO;
 unsigned int shaderProgram;
 
-void createOpenGLWindow(window window)
+void createOpenglWindow(window window)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -123,7 +123,7 @@ void createOpenGLWindow(window window)
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void openGLLoop(window window) {
+void openglLoop(window window) {
     while (!glfwWindowShouldClose(glfwWindow)) {
         processInput(glfwWindow);
 
@@ -147,7 +147,7 @@ void openGLLoop(window window) {
     }
 }
 
-void destroyOpenGLWindow() {
+void destroyOpenglWindow() {
     // Free memory
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -156,8 +156,8 @@ void destroyOpenGLWindow() {
     glfwTerminate();
 }
 
-void runOpenGLApp(window window) {
-    createOpenGLWindow(window);
-    openGLLoop(window);
-    destroyOpenGLWindow();
+void runOpenglApp(window window) {
+    createOpenglWindow(window);
+    openglLoop(window);
+    destroyOpenglWindow();
 }
