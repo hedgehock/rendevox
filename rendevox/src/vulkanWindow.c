@@ -88,8 +88,9 @@ void vulkanPickPhysicalDevice() {
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
 
     // Choose suitable GPU
-    for (int i = 0; i < deviceCount; ++i) {
+    for (int i = 0; i < deviceCount; i++) {
         if (isDeviceSuitable(devices[i])) {
+            printf("Ahoj");
             physicalDevice = devices[i];
             break;
         }
@@ -107,9 +108,11 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    // Support only for dedicated GPU and Integrated GPU with geometry shaders support
+    vulkanQueueFamilyIndices indices = findQueueFamilies(device);
+
+    // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
-    deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader;
+            deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader && indices.graphicsFamily;
 }
 
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
@@ -118,8 +121,15 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, NULL);
 
-    VkQueueFamilyProperties* queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+    VkQueueFamilyProperties *queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies);
+
+    // Select Queue Family that supports VK_QUEUE_GRAPHICS_BIT
+    for (int i = 1; i < queueFamilyCount + 1; i++) {
+        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            indices.graphicsFamily = i;
+        }
+    }
 
     return indices;
 }
