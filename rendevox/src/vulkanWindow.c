@@ -6,6 +6,7 @@
 
 GLFWwindow *vulkanWindow;
 VkInstance instance;
+VkDevice logicalDevice;
 
 void runVulkanApp(window window) {
     vulkanCreateWindow(window);
@@ -17,6 +18,7 @@ void runVulkanApp(window window) {
 void vulkanInit() {
     vulkanCreateInstance();
     vulkanPickPhysicalDevice();
+    vulkanCreateLogicalDevice();
 }
 
 void vulkanCreateWindow(window window) {
@@ -90,7 +92,6 @@ void vulkanPickPhysicalDevice() {
     // Choose suitable GPU
     for (int i = 0; i < deviceCount; i++) {
         if (isDeviceSuitable(devices[i])) {
-            printf("Ahoj");
             physicalDevice = devices[i];
             break;
         }
@@ -132,4 +133,8 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     }
 
     return indices;
+}
+
+void vulkanCreateLogicalDevice() {
+
 }
