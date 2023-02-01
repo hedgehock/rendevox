@@ -137,6 +137,9 @@ bool isDeviceSuitable(VkPhysicalDevice device);
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 void vulkanCreateLogicalDevice();
 
+// Vulkan print error and exit
+void vulkanError(char* errorMessage);
+
 // ---------
 // Utilities
 // ---------

@@ -71,7 +71,7 @@ void vulkanCreateInstance() {
     createInfo.enabledLayerCount = 0;
 
     if (vkCreateInstance(&createInfo, NULL, &instance) != VK_SUCCESS) {
-        fprintf(stderr, "%s", "Cannot create Vulkan instance!");
+        vulkanError("Cannot create Vulkan instance!");
     }
 }
 
@@ -83,7 +83,7 @@ void vulkanPickPhysicalDevice() {
     vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
 
     if (deviceCount == 0) {
-        fprintf(stderr, "%s", "Failed to find GPUs with Vulkan support!");
+        vulkanError("Failed to find GPUs with Vulkan support!");
     }
 
     VkPhysicalDevice *devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
@@ -98,7 +98,7 @@ void vulkanPickPhysicalDevice() {
     }
 
     if (physicalDevice == VK_NULL_HANDLE) {
-        fprintf(stderr, "%s", "Failed to find suitable GPU!");
+        vulkanError("Failed to find suitable GPU!");
     }
 }
 
@@ -138,3 +138,10 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 void vulkanCreateLogicalDevice() {
 
 }
+
+// Vulkan error print with exit
+void vulkanError(char* errorMessage) {
+    fprintf(stderr, "%s%s", errorMessage, "\n");
+    exit(EXIT_FAILURE);
+}
+
