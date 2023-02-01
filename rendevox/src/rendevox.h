@@ -113,6 +113,9 @@ void runSDLApp(window window);
 void drawTriangle(SDL_Renderer *renderer, vector2 v1, vector2 v2, vector2 v3, color color);
 void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 
+// OpenGL
+void runOpenGLApp(window window);
+
 // Vulkan
 void runVulkanApp(window window);
 
