@@ -5,8 +5,15 @@
 #include <GLFW/glfw3.h>
 
 GLFWwindow *vulkanWindow;
+
 VkInstance instance;
+
+// Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
+VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 VkDevice logicalDevice;
+
+// Destroyed on logical device destroy
+VkQueue graphicsQueue;
 
 void runVulkanApp(window window) {
     vulkanCreateWindow(window);
@@ -38,6 +45,8 @@ void vulkanMainLoop() {
 }
 
 void vulkanCleanup() {
+    vkDestroyDevice(logicalDevice, NULL);
+
     vkDestroyInstance(instance, NULL);
 
     glfwDestroyWindow(vulkanWindow);
@@ -76,9 +85,6 @@ void vulkanCreateInstance() {
 }
 
 void vulkanPickPhysicalDevice() {
-    // Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
 
@@ -113,9 +119,14 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 
     // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
-            deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader && indices.graphicsFamily;
+            deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader &&
+           indices.graphicsFamily;
 }
 
+/*
+ * Returns 0 if queue family was not found
+ * If return of function is for example 1 you must decrease this value by 1 when you want to use it as index of Queue Family
+ */
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     vulkanQueueFamilyIndices indices;
 
@@ -136,11 +147,36 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 }
 
 void vulkanCreateLogicalDevice() {
+    vulkanQueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
+    VkDeviceQueueCreateInfo queueCreateInfo = {0};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily - 1;
+    queueCreateInfo.queueCount = 1;
+
+    // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures = {0};
+
+    // Logical device info
+    VkDeviceCreateInfo createInfo = {0};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.queueCreateInfoCount = 1;
+
+    if (vkCreateDevice(physicalDevice, &createInfo, NULL, &logicalDevice) != VK_SUCCESS) {
+        vulkanError("Failed to create logical device!");
+    }
+
+    // index 0 means use of one queue from family
+    vkGetDeviceQueue(logicalDevice, indices.graphicsFamily - 1, 0, &graphicsQueue);
 }
 
 // Vulkan error print with exit
-void vulkanError(char* errorMessage) {
+void vulkanError(char *errorMessage) {
     fprintf(stderr, "%s%s", errorMessage, "\n");
     exit(EXIT_FAILURE);
 }
