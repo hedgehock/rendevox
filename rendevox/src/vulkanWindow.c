@@ -142,6 +142,15 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     for (int i = 1; i < queueFamilyCount + 1; i++) {
         if (queueFamilies[i - 1].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
+            printf("This Queue Family supports graphics.\n");
+        }
+
+        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_COMPUTE_BIT) {
+            printf("This Queue Family supports compute.\n");
+        }
+
+        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_TRANSFER_BIT) {
+            printf("This Queue Family supports transfer.\n");
         }
     }
 
