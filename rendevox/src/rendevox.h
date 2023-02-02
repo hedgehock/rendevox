@@ -134,8 +134,10 @@ void vulkanPickPhysicalDevice();
 
 // Vulkan Pick Physical Device Functions
 bool isDeviceSuitable(VkPhysicalDevice device);
+
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 void vulkanCreateLogicalDevice();
+void vulkanCreateSurface();
 
 // Vulkan print error and exit
 void vulkanError(char* errorMessage);

@@ -14,6 +14,7 @@ VkDevice logicalDevice;
 
 // Destroyed on logical device destroy
 VkQueue graphicsQueue;
+VkSurfaceKHR surface;
 
 void runVulkanApp(window window) {
     vulkanCreateWindow(window);
@@ -24,6 +25,7 @@ void runVulkanApp(window window) {
 
 void vulkanInit() {
     vulkanCreateInstance();
+    vulkanCreateSurface();
     vulkanPickPhysicalDevice();
     vulkanCreateLogicalDevice();
 }
@@ -46,11 +48,10 @@ void vulkanMainLoop() {
 
 void vulkanCleanup() {
     vkDestroyDevice(logicalDevice, NULL);
-
+    vkDestroySurfaceKHR(instance, surface, NULL);
     vkDestroyInstance(instance, NULL);
 
     glfwDestroyWindow(vulkanWindow);
-
     glfwTerminate();
 }
 
@@ -193,3 +194,8 @@ void vulkanError(char *errorMessage) {
     exit(EXIT_FAILURE);
 }
 
+void vulkanCreateSurface() {
+    if (glfwCreateWindowSurface(instance, vulkanWindow, NULL, &surface) != VK_SUCCESS) {
+        vulkanError("Failed to create window surface!");
+    }
+}
