@@ -123,13 +123,10 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
             deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader &&
-           indices.graphicsFamily;
+           indices.isGraphicsFamilyPresent;
 }
 
-/*
- * Returns 0 if queue family was not found
- * If return of function is for example 1 you must decrease this value by 1 when you want to use it as index of Queue Family
- */
+// Function to find queue families
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     vulkanQueueFamilyIndices indices;
 
@@ -139,18 +136,21 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     VkQueueFamilyProperties *queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies);
 
+    indices.isGraphicsFamilyPresent = false;
+
     // Select Queue Family that supports VK_QUEUE_GRAPHICS_BIT
-    for (int i = 1; i < queueFamilyCount + 1; i++) {
-        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    for (int i = 0; i < queueFamilyCount; i++) {
+        if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
+            indices.isGraphicsFamilyPresent = true;
             printf("This Queue Family supports graphics.\n");
         }
 
-        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_COMPUTE_BIT) {
+        if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
             printf("This Queue Family supports compute.\n");
         }
 
-        if (queueFamilies[i - 1].queueFlags & VK_QUEUE_TRANSFER_BIT) {
+        if (queueFamilies[i].queueFlags & VK_QUEUE_TRANSFER_BIT) {
             printf("This Queue Family supports transfer.\n");
         }
     }
@@ -163,7 +163,7 @@ void vulkanCreateLogicalDevice() {
 
     VkDeviceQueueCreateInfo queueCreateInfo = {0};
     queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily - 1;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily;
     queueCreateInfo.queueCount = 1;
 
     // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
@@ -185,7 +185,7 @@ void vulkanCreateLogicalDevice() {
     }
 
     // index 0 means use of one queue from family
-    vkGetDeviceQueue(logicalDevice, indices.graphicsFamily - 1, 0, &graphicsQueue);
+    vkGetDeviceQueue(logicalDevice, indices.graphicsFamily, 0, &graphicsQueue);
 }
 
 // Vulkan error print with exit

@@ -106,6 +106,9 @@ typedef struct {
 
 typedef struct {
     uint32_t graphicsFamily;
+    bool isGraphicsFamilyPresent;
+    uint32_t presentFamily;
+    bool isPresentFamily;
 } vulkanQueueFamilyIndices;
 
 // ---------
