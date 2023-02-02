@@ -188,14 +188,14 @@ void vulkanCreateLogicalDevice() {
     vkGetDeviceQueue(logicalDevice, indices.graphicsFamily, 0, &graphicsQueue);
 }
 
-// Vulkan error print with exit
-void vulkanError(char *errorMessage) {
-    fprintf(stderr, "%s%s", errorMessage, "\n");
-    exit(EXIT_FAILURE);
-}
-
 void vulkanCreateSurface() {
     if (glfwCreateWindowSurface(instance, vulkanWindow, NULL, &surface) != VK_SUCCESS) {
         vulkanError("Failed to create window surface!");
     }
+}
+
+// Vulkan error print with exit
+void vulkanError(char *errorMessage) {
+    fprintf(stderr, "%s%s", errorMessage, "\n");
+    exit(EXIT_FAILURE);
 }
