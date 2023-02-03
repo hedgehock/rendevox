@@ -170,8 +170,8 @@ bool isDeviceSuitable(VkPhysicalDevice device);
 vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 void vulkanCreateLogicalDevice();
-
 void vulkanCreateSurface();
+bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 // Vulkan print error and exit
 void vulkanError(char *errorMessage);

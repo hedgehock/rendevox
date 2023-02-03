@@ -6,6 +6,8 @@
 
 GLFWwindow *vulkanWindow;
 
+const char *deviceExtensions;
+
 VkInstance instance;
 VkSurfaceKHR surface;
 
@@ -25,6 +27,8 @@ void runVulkanApp(window window) {
 }
 
 void vulkanInit() {
+    deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+
     vulkanCreateInstance();
     vulkanCreateSurface();
     vulkanPickPhysicalDevice();
@@ -119,12 +123,14 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
+
     vulkanQueueFamilyIndices indices = findQueueFamilies(device);
 
-    // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families
+    // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families and supports required extensions
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
             deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader &&
-           indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent;
+           indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent && extensionsSupported;
 }
 
 // Function to find queue families
@@ -219,6 +225,23 @@ void vulkanCreateSurface() {
     if (glfwCreateWindowSurface(instance, vulkanWindow, NULL, &surface) != VK_SUCCESS) {
         vulkanError("Failed to create window surface!");
     }
+}
+
+bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+    uint32_t extensionsCount;
+    vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, NULL);
+
+    VkExtensionProperties* availableExtensions = malloc(extensionsCount * sizeof(VkExtensionProperties));
+    vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, availableExtensions);
+
+    VkExtensionProperties* requiredExtensions = malloc(sizeof(VkExtensionProperties));
+
+    for (int i = 0; i < extensionsCount; i++) {
+        requiredExtensions = realloc(requiredExtensions, sizeof(VkExtensionProperties) * (i + 1));
+        requiredExtensions[i] = availableExtensions[i];
+    }
+
+    return true;
 }
 
 // Vulkan error print with exit
