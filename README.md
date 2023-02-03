@@ -51,7 +51,7 @@ void start() {
 
 void update(int deltaSeconds) {
 	if(isKeyPressed(KEYBOARD_W)) {
-		Entity cube = findEntity("Cube1");
+		Entity cube = findEntityInBuffer("Cube1");
 		cube.position = vector3Add(cube.position, (vector3){ 0, 0, 1 });
 	}
 }
