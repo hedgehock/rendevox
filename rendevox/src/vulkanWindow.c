@@ -7,6 +7,7 @@
 GLFWwindow *vulkanWindow;
 
 VkInstance instance;
+VkSurfaceKHR surface;
 
 // Initializes Vulkan Physical Device (Destroyed on Vulkan instance cleanup)
 VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -14,7 +15,7 @@ VkDevice logicalDevice;
 
 // Destroyed on logical device destroy
 VkQueue graphicsQueue;
-VkSurfaceKHR surface;
+VkQueue presentQueue;
 
 void runVulkanApp(window window) {
     vulkanCreateWindow(window);
@@ -123,7 +124,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
             deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader &&
-           indices.isGraphicsFamilyPresent;
+           indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent;
 }
 
 // Function to find queue families
@@ -136,22 +137,34 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     VkQueueFamilyProperties *queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies);
 
-    indices.isGraphicsFamilyPresent = false;
+    indices.is.GraphicsFamilyPresent = false;
+    indices.is.PresentFamilyPresent = false;
 
     // Select Queue Family that supports VK_QUEUE_GRAPHICS_BIT
     for (int i = 0; i < queueFamilyCount; i++) {
         if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = i;
-            indices.isGraphicsFamilyPresent = true;
-            printf("This Queue Family supports graphics.\n");
+            indices.family.GraphicsFamily = i;
+            indices.is.GraphicsFamilyPresent = true;
+            printf("This Queue Family at index %i supports graphics.\n", i);
         }
 
         if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
-            printf("This Queue Family supports compute.\n");
+            printf("This Queue Family at index %i supports compute.\n", i);
         }
 
         if (queueFamilies[i].queueFlags & VK_QUEUE_TRANSFER_BIT) {
-            printf("This Queue Family supports transfer.\n");
+            printf("This Queue Family at index %i supports transfer.\n", i);
+        }
+
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+        if (presentSupport) {
+            indices.is.PresentFamilyPresent = true;
+        }
+
+        if (indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent) {
+            break;
         }
     }
 
@@ -161,23 +174,36 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
 void vulkanCreateLogicalDevice() {
     vulkanQueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
-    VkDeviceQueueCreateInfo queueCreateInfo = {0};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily;
-    queueCreateInfo.queueCount = 1;
+    size_t queueFamilyCount = sizeof(indices.is) / sizeof(indices.is.GraphicsFamilyPresent);
+
+    VkDeviceQueueCreateInfo *queueCreateInfos = malloc(queueFamilyCount * sizeof(VkDeviceQueueCreateInfo));
+
+    VkDeviceQueueCreateInfo queueInfo = {0};
+    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueInfo.queueFamilyIndex = indices.family.GraphicsFamily;
+    queueInfo.queueCount = 1;
 
     // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    queueInfo.pQueuePriorities = &queuePriority;
+
+    queueCreateInfos[0] = queueInfo;
+
+    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueInfo.queueFamilyIndex = indices.family.PresentFamily;
+    queueInfo.queueCount = 1;
+    queueInfo.pQueuePriorities = &queuePriority;
+
+    queueCreateInfos[1] = queueInfo;
 
     VkPhysicalDeviceFeatures deviceFeatures = {0};
 
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo *) queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
 
     if (vkCreateDevice(physicalDevice, &createInfo, NULL, &logicalDevice) != VK_SUCCESS) {
@@ -185,7 +211,8 @@ void vulkanCreateLogicalDevice() {
     }
 
     // index 0 means use of one queue from family
-    vkGetDeviceQueue(logicalDevice, indices.graphicsFamily, 0, &graphicsQueue);
+    vkGetDeviceQueue(logicalDevice, indices.family.GraphicsFamily, 0, &graphicsQueue);
+    vkGetDeviceQueue(logicalDevice, indices.family.PresentFamily, 0, &presentQueue);
 }
 
 void vulkanCreateSurface() {
