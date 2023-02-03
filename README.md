@@ -38,7 +38,10 @@ int main() {
 }
 
 void start() {
-	entity cube = { 0 };
+	Scene scene = createScene("3D", "Main scene");
+	setMainScene(scene);
+
+	Entity cube = { 0 };
 	cube.name("Cube1");
 	cube.position = (vector3){ 0, 0, 0 };
 	cube.rotation = (vector3){ 0, 0, 0, 0 };
@@ -48,7 +51,7 @@ void start() {
 
 void update(int deltaSeconds) {
 	if(isKeyPressed(KEYBOARD_W)) {
-		object cube = findEntity("Cube1");
+		Entity cube = findEntity("Cube1");
 		cube.position = vector3Add(cube.position, (vector3){ 0, 0, 1 });
 	}
 }
