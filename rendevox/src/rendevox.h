@@ -182,10 +182,6 @@ void vulkanError(string errorMessage);
 // Utilities
 // ---------
 
-// Array functions
-
-void removeCharsFromArray(string* array, int* numberOfElements, string chars);
-
 // Sorting functions
 void swap(triangle *a, triangle *b);
 

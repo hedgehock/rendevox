@@ -6,8 +6,8 @@
 
 GLFWwindow* vulkanWindow;
 
-string* deviceExtensions;
-int deviceExtensiosCount;
+string* requiredDeviceExtensions;
+int requiredDeviceExtensionsCount;
 
 VkInstance instance;
 VkSurfaceKHR surface;
@@ -29,7 +29,8 @@ void runVulkanApp(window window) {
 
 void vulkanInit() {
     string extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-    deviceExtensions = extensions;
+    requiredDeviceExtensions = extensions;
+    requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(string);
 
     vulkanCreateInstance();
     vulkanCreateSurface();
@@ -232,16 +233,17 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     VkExtensionProperties* availableExtensions = malloc(extensionsCount * sizeof(VkExtensionProperties));
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, availableExtensions);
 
-    deviceExtensiosCount = deviceExtensiosCount + 10;
-    string* requiredExtensions = deviceExtensions;
-    int requiredExtensionsCount = deviceExtensiosCount;
+    int supportedExtensionCount = 0;
 
-    int i = requiredExtensionsCount;
-    for (; i > 0; i--) {
-        removeCharsFromArray(requiredExtensions, &requiredExtensionsCount, availableExtensions[i].extensionName);
+    for (int r = 0; r < requiredDeviceExtensionsCount; r++) {
+        for (int e = 0; e < extensionsCount; e++) {
+            if (strcmp(requiredDeviceExtensions[r], availableExtensions[e].extensionName) == 0) {
+                supportedExtensionCount++;
+            }
+        }
     }
 
-    return requiredExtensionsCount == 0;
+    return supportedExtensionCount == requiredDeviceExtensionsCount;
 }
 
 // Vulkan error print with exit
