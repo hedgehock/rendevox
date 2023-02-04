@@ -1,8 +1,5 @@
 #include "rendevox.h"
 
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
-
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
                                  "void main()\n"
@@ -130,12 +127,15 @@ void createOpenglWindow(window window)
 
 void openglLoop(window window) {
     while (!glfwWindowShouldClose(glfwWindow)) {
+        // Handle Input
         processInput(glfwWindow);
 
-        // render
-        // ------
+        // Render Start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // Render Loop
+        loopEntityBuffer(window.renderType);
 
         // draw our first triangle
         glUseProgram(shaderProgram);
@@ -147,6 +147,7 @@ void openglLoop(window window) {
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0); // no need to unbind it every time
 
+        // Render End
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
     }
@@ -163,6 +164,8 @@ void destroyOpenglWindow() {
 
 void runOpenglApp(window window) {
     createOpenglWindow(window);
+    userStart();
+    createEntityBuffer();
     openglLoop(window);
     destroyOpenglWindow();
 }

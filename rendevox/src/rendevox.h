@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
+#include "glad/glad.h"
+#include <GLFW/glfw3.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <math.h>
 #include <vulkan/vulkan.h>
 
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
+void userStart();
+void userUpdate(float delta);
 
 // ----------
 // Data types
@@ -79,6 +83,7 @@ matrix4 matrix4QuickInverse(matrix4 *m);
 typedef struct {
     int size;
     triangle *t;
+    float* vertices;
 } mesh;
 
 // Mesh functions
@@ -94,6 +99,7 @@ font sdlLoadFont(const char* path);
 
 // Window declaration
 typedef struct {
+    const char* renderType;
     const char* title;
     int width;
     int height;
@@ -101,6 +107,30 @@ typedef struct {
     SDL_Window *sdlWindow;
     SDL_Renderer *sdlRenderer;
 } window;
+
+// Entity declaration
+typedef struct {
+    const char* name;
+    vector3 position;
+    vector3 rotation;
+    mesh mesh;
+} entity;
+
+// Entity functions
+void createEntityBuffer();
+void loopEntityBuffer(const char* renderType);
+void addToEntityBuffer(entity addEntity);
+
+// Scene declaration
+typedef struct {
+    const char* type;
+    const char* name;
+} scene;
+
+// Scene functions
+scene createScene(const char* type, const char* name);
+void setMainScene(scene scene);
+scene* getMainScene();
 
 // ---------
 // Rendering

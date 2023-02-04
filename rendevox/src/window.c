@@ -3,6 +3,7 @@
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen) {
     // Define Window
     window window;
+    window.renderType = renderType;
     window.title = title;
     window.width = width;
     window.height = height;
