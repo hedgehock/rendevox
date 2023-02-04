@@ -4,9 +4,10 @@
 
 #include <GLFW/glfw3.h>
 
-GLFWwindow *vulkanWindow;
+GLFWwindow* vulkanWindow;
 
-const char *deviceExtensions;
+string* deviceExtensions;
+int deviceExtensiosCount;
 
 VkInstance instance;
 VkSurfaceKHR surface;
@@ -27,7 +28,8 @@ void runVulkanApp(window window) {
 }
 
 void vulkanInit() {
-    deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    string extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    deviceExtensions = extensions;
 
     vulkanCreateInstance();
     vulkanCreateSurface();
@@ -76,7 +78,7 @@ void vulkanCreateInstance() {
     createInfo.pApplicationInfo = &appInfo;
 
     uint32_t glfwExtensionCount = 0;
-    const char **glfwExtensions;
+    const char** glfwExtensions;
 
     // Get GLFW extensions
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -100,13 +102,14 @@ void vulkanPickPhysicalDevice() {
         vulkanError("Failed to find GPUs with Vulkan support!");
     }
 
-    VkPhysicalDevice *devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
+    VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
 
     // Choose suitable GPU
     for (int i = 0; i < deviceCount; i++) {
         if (isDeviceSuitable(devices[i])) {
             physicalDevice = devices[i];
+            free(devices);
             break;
         }
     }
@@ -140,7 +143,7 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, NULL);
 
-    VkQueueFamilyProperties *queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+    VkQueueFamilyProperties* queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies);
 
     indices.is.GraphicsFamilyPresent = false;
@@ -182,32 +185,27 @@ void vulkanCreateLogicalDevice() {
 
     size_t queueFamilyCount = sizeof(indices.is) / sizeof(indices.is.GraphicsFamilyPresent);
 
-    VkDeviceQueueCreateInfo *queueCreateInfos = malloc(queueFamilyCount * sizeof(VkDeviceQueueCreateInfo));
-
-    VkDeviceQueueCreateInfo queueInfo = {0};
-    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueInfo.queueFamilyIndex = indices.family.GraphicsFamily;
-    queueInfo.queueCount = 1;
+    VkDeviceQueueCreateInfo* queueCreateInfos = calloc(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
 
     // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
     float queuePriority = 1.0f;
-    queueInfo.pQueuePriorities = &queuePriority;
 
-    queueCreateInfos[0] = queueInfo;
+    queueCreateInfos[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfos[0].queueFamilyIndex = indices.family.GraphicsFamily;
+    queueCreateInfos[0].queueCount = 1;
+    queueCreateInfos[0].pQueuePriorities = &queuePriority;
 
-    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueInfo.queueFamilyIndex = indices.family.PresentFamily;
-    queueInfo.queueCount = 1;
-    queueInfo.pQueuePriorities = &queuePriority;
-
-    queueCreateInfos[1] = queueInfo;
+    queueCreateInfos[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfos[1].queueFamilyIndex = indices.family.PresentFamily;
+    queueCreateInfos[1].queueCount = 1;
+    queueCreateInfos[1].pQueuePriorities = &queuePriority;
 
     VkPhysicalDeviceFeatures deviceFeatures = {0};
 
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo *) queueCreateInfos;
+    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo*) queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
@@ -234,18 +232,20 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     VkExtensionProperties* availableExtensions = malloc(extensionsCount * sizeof(VkExtensionProperties));
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, availableExtensions);
 
-    VkExtensionProperties* requiredExtensions = malloc(sizeof(VkExtensionProperties));
+    deviceExtensiosCount = deviceExtensiosCount + 10;
+    string* requiredExtensions = deviceExtensions;
+    int requiredExtensionsCount = deviceExtensiosCount;
 
-    for (int i = 0; i < extensionsCount; i++) {
-        requiredExtensions = realloc(requiredExtensions, sizeof(VkExtensionProperties) * (i + 1));
-        requiredExtensions[i] = availableExtensions[i];
+    int i = requiredExtensionsCount;
+    for (; i > 0; i--) {
+        removeCharsFromArray(requiredExtensions, &requiredExtensionsCount, availableExtensions[i].extensionName);
     }
 
-    return true;
+    return requiredExtensionsCount == 0;
 }
 
 // Vulkan error print with exit
-void vulkanError(char *errorMessage) {
+void vulkanError(string errorMessage) {
     fprintf(stderr, "%s%s", errorMessage, "\n");
     exit(EXIT_FAILURE);
 }

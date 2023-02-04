@@ -135,6 +135,8 @@ typedef struct {
     vulkanFamily family;
 } vulkanQueueFamilyIndices;
 
+typedef char* string;
+
 // ---------
 // Rendering
 // ---------
@@ -174,11 +176,15 @@ void vulkanCreateSurface();
 bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 
 // Vulkan print error and exit
-void vulkanError(char *errorMessage);
+void vulkanError(string errorMessage);
 
 // ---------
 // Utilities
 // ---------
+
+// Array functions
+
+void removeCharsFromArray(string* array, int* numberOfElements, string chars);
 
 // Sorting functions
 void swap(triangle *a, triangle *b);
