@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
 }
 
 void userStart() {
-    scene mainScene = createScene("3D", "Main scene");
+    scene mainScene = createScene("2D", "Main scene");
     setMainScene(mainScene);
 
     mesh triangleMesh;

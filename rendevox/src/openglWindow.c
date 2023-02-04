@@ -135,7 +135,7 @@ void openglLoop(window window) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Render Loop
-        loopEntityBuffer(window.renderType);
+        openglRenderLoop();
 
         // draw our first triangle
         glUseProgram(shaderProgram);

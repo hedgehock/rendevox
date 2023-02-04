@@ -116,9 +116,10 @@ typedef struct {
     mesh mesh;
 } entity;
 
-// Entity functions
+// EntityBuffer
 void createEntityBuffer();
-void loopEntityBuffer(const char* renderType);
+entity* getEntityBuffer();
+unsigned int getEntityBufferSize();
 void addToEntityBuffer(entity addEntity);
 
 // Scene declaration
@@ -152,6 +153,9 @@ void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 //
 
 void runOpenglApp(window window);
+
+// Render
+void openglRenderLoop();
 
 //
 // Vulkan
