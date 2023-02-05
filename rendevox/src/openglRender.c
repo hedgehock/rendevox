@@ -8,7 +8,7 @@ unsigned int verticesBufferSize = 0;
 
 bool debug = false;
 
-void addVerticesToVerticesBuffer(int amount, float* vertices) {
+void addVerticesToVerticesBuffer(int amount, const float* vertices) {
     if (debug == true) printf("amount: %i\n", amount);
     for (int i = 0; i < amount; i++) {
         verticesBuffer = realloc(verticesBuffer, sizeof(float) * (verticesBufferSize + 1));
