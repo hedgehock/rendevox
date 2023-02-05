@@ -3,7 +3,6 @@
 entity* entityBuffer;
 unsigned int entityBufferSize = 0;
 
-
 void createEntityBuffer() {
     entityBuffer = malloc(sizeof(entity));
 }
@@ -16,8 +15,8 @@ unsigned int getEntityBufferSize() {
     return entityBufferSize;
 }
 
-void addToEntityBuffer(entity addEntity) {
-    entityBufferSize += 1;
+void addToEntityBuffer(entity newEntity) {
+    entityBufferSize++;
     entityBuffer = realloc(entityBuffer, sizeof(entity) * entityBufferSize);
-    entityBuffer[entityBufferSize - 1] = addEntity;
+    entityBuffer[entityBufferSize - 1] = newEntity;
 }

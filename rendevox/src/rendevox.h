@@ -155,7 +155,9 @@ void drawText(SDL_Renderer *renderer, int x, int y, char *text, font font);
 void runOpenglApp(window window);
 
 // Render
-void openglRenderLoop();
+void createOpenglRender();
+void loopOpenglRender();
+void destroyOpenglRender();
 
 //
 // Vulkan
