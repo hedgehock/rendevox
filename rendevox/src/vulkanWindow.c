@@ -127,14 +127,21 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    bool extensionsSupported = vulkanCheckDeviceExtensionSupport(device);
+
+    bool swapChainAdequate;
+    if (extensionsSupported) {
+        vulkanSwapChainSupportDetails swapChainSupport = vulkanQuerySwapChainSupport(device);
+        swapChainAdequate = swapChainSupport.formatCount != 0 && swapChainSupport.presentModeCount != 0;
+    }
 
     vulkanQueueFamilyIndices indices = findQueueFamilies(device);
 
     // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families and supports required extensions
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
             deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader &&
-           indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent && extensionsSupported;
+           indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent && extensionsSupported &&
+           swapChainAdequate;
 }
 
 // Function to find queue families
@@ -211,6 +218,10 @@ void vulkanCreateLogicalDevice() {
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
 
+    // Assign required device extensions to logical device
+    createInfo.enabledExtensionCount = requiredDeviceExtensionsCount;
+    createInfo.ppEnabledExtensionNames = (const char* const*) requiredDeviceExtensions;
+
     if (vkCreateDevice(physicalDevice, &createInfo, NULL, &logicalDevice) != VK_SUCCESS) {
         vulkanError("Failed to create logical device!");
     }
@@ -226,7 +237,7 @@ void vulkanCreateSurface() {
     }
 }
 
-bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device) {
     uint32_t extensionsCount;
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, NULL);
 
@@ -244,6 +255,16 @@ bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     }
 
     return supportedExtensionCount == requiredDeviceExtensionsCount;
+}
+
+vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice device) {
+    vulkanSwapChainSupportDetails details;
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, details.formats);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &details.presentModeCount, details.presentModes);
+
+    return details;
 }
 
 // Vulkan error print with exit

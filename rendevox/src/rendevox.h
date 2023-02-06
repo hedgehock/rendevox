@@ -135,6 +135,14 @@ typedef struct {
     vulkanFamily family;
 } vulkanQueueFamilyIndices;
 
+typedef struct {
+    VkSurfaceCapabilitiesKHR capabilities;
+    VkSurfaceFormatKHR* formats;
+    VkPresentModeKHR* presentModes;
+    uint32_t formatCount;
+    uint32_t presentModeCount;
+} vulkanSwapChainSupportDetails;
+
 typedef char* string;
 
 // ---------
@@ -175,7 +183,9 @@ void vulkanCreateLogicalDevice();
 
 void vulkanCreateSurface();
 
-bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device);
+
+vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice device);
 
 // Vulkan print error and exit
 void vulkanError(string errorMessage);
