@@ -60,6 +60,8 @@ void createOpenglWindow(window window)
     glfwMakeContextCurrent(glfwWindow);
     glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
 
+    glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, GL_FALSE);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         printf("Cannot load GLAD");

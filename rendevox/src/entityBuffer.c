@@ -25,7 +25,6 @@ void addQuadToEntityBuffer(const char* name, vector2 position, vector2 size) {
     vector2 windowSize = getWindowSizeOpenglWindow();
     float windowSizeX = windowSize.y / 1000.0f;
     float windowSizeY = windowSize.x / 1000.0f;
-    printf("%f, %f\n", windowSizeX, windowSizeY);
 
     mesh triangleMesh;
     triangleMesh.size = 9;
@@ -46,8 +45,8 @@ void addQuadToEntityBuffer(const char* name, vector2 position, vector2 size) {
     entity triangle = { 0 };
     strcat(triangle.name, name);
     strcat(triangle.name, "t1");
-    triangle.position = (vector3){ 0, 0, 0};
-    triangle.rotation = (vector3){ 0, 0, 0, 1};
+    triangle.position = (vector3){ 0, 0, 0 };
+    triangle.rotation = (vector3){ 0, 0, 0, 1 };
     triangle.mesh = triangleMesh;
 
     addToEntityBuffer(triangle);
