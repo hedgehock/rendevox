@@ -65,30 +65,35 @@ void drawOpenglRender() {
     glBindVertexArray(0);
 }
 
+float lastTime = 0.0f;
+
 void loopOpenglRender() {
-    userUpdate(0.0f);
+    float currentTime = glfwGetTime();
+    float deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
 
-    if (strcmp(getMainScene()->type, "2D") == 0) {
-        for (int i = 0; i < getEntityBufferSize(); i++) {
-            entity currentEntity = getEntityBuffer()[i];
 
-            if (debug == true) printf("Entity name: %s\n", currentEntity.name);
+    userUpdate(deltaTime);
 
-            addVerticesToVerticesBuffer(currentEntity.mesh.size, currentEntity.mesh.vertices);
-        }
+    for (int i = 0; i < getEntityBufferSize(); i++) {
+        entity currentEntity = getEntityBuffer()[i];
 
-        // Debug purposes
-        if (debug == true) {
-            printf("\nNEW VERTICES BUFFER\n");
-            for (int i = 0; i < verticesBufferSize; i++) {
-                printf("VERTEX: %f \n", verticesBuffer[i]);
-            }
-        }
+        if (debug == true) printf("Entity name: %s\n", currentEntity.name);
 
-        renderCreateVertexArray();
-
-        drawOpenglRender();
-
-        cleanVerticesBuffer();
+        addVerticesToVerticesBuffer(currentEntity.mesh.size, currentEntity.mesh.vertices);
     }
+
+    // Debug purposes
+    if (debug == true) {
+        printf("\nNEW VERTICES BUFFER\n");
+        for (int i = 0; i < verticesBufferSize; i++) {
+            printf("VERTEX: %f \n", verticesBuffer[i]);
+        }
+    }
+
+    renderCreateVertexArray();
+
+    drawOpenglRender();
+
+    cleanVerticesBuffer();
 }

@@ -21,6 +21,8 @@ void userUpdate(float delta);
 #define min(a,b) (((a)<(b))?(a):(b))
 #define max(a,b) (((a)>(b))?(a):(b))
 
+#define TAU (M_PI * 2.0)
+
 // Vector2 declaration
 typedef struct {
     float x;
@@ -110,7 +112,7 @@ typedef struct {
 
 // Entity declaration
 typedef struct {
-    const char* name;
+    char name[32];
     vector3 position;
     vector3 rotation;
     mesh mesh;
@@ -121,7 +123,9 @@ void createEntityBuffer();
 entity* getEntityBuffer();
 unsigned int getEntityBufferSize();
 void addToEntityBuffer(entity addEntity);
+void addQuadToEntityBuffer(const char* name, vector2 position, vector2 size);
 
+/*
 // Scene declaration
 typedef struct {
     const char* type;
@@ -132,6 +136,7 @@ typedef struct {
 scene createScene(const char* type, const char* name);
 void setMainScene(scene scene);
 scene* getMainScene();
+ */
 
 // ---------
 // Rendering
@@ -158,6 +163,7 @@ void runOpenglApp(window window);
 void createOpenglRender();
 void loopOpenglRender();
 void destroyOpenglRender();
+vector2 getWindowSizeOpenglWindow();
 
 //
 // Vulkan

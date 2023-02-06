@@ -1,3 +1,6 @@
+// Only entity buffer for now
+
+/*
 #include "rendevox.h"
 
 scene mainScene;
@@ -17,3 +20,4 @@ void setMainScene(scene scene) {
 scene* getMainScene() {
     return &mainScene;
 }
+ */

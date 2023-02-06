@@ -20,16 +20,27 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 }
 
+vector2 windowSize = (vector2){ 0, 0 };
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    windowSize.x = (float)width;
+    windowSize.y = (float)height;
 }
 
 GLFWwindow* glfwWindow;
 unsigned int shaderProgram;
 
+vector2 getWindowSizeOpenglWindow() {
+    return windowSize;
+}
+
 void createOpenglWindow(window window)
 {
+    windowSize.x = (float)window.width;
+    windowSize.y = (float)window.height;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
