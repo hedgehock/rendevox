@@ -45,7 +45,7 @@ void renderCreateVertexArray() {
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void createOpenglRender() {
+void openglRenderCreate() {
     verticesBuffer = malloc(sizeof(float));
 
     // Generate Vertex array and Vertex buffer
@@ -53,7 +53,7 @@ void createOpenglRender() {
     glGenBuffers(1, &VBO);
 }
 
-void destroyOpenglRender() {
+void openglRenderDestroy() {
     // Free memory
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -69,7 +69,7 @@ float lastTime = 0.0f;
 
 void loopOpenglRender() {
     // Calculate delta time
-    float currentTime = glfwGetTime();
+    float currentTime = (float)glfwGetTime();
     float deltaTime = currentTime - lastTime;
     lastTime = currentTime;
 
@@ -77,8 +77,8 @@ void loopOpenglRender() {
     userUpdate(deltaTime);
 
     // Main drawing loop
-    for (int i = 0; i < getEntityBufferSize(); i++) {
-        entity currentEntity = getEntityBuffer()[i];
+    for (int i = 0; i < entityBufferGetSize(); i++) {
+        entity currentEntity = entityBufferGet()[i];
 
         if (debug == true) printf("Entity name: %s\n", currentEntity.name);
 

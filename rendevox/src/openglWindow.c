@@ -1,12 +1,12 @@
 #include "rendevox.h"
 
-const char *vertexShaderSource = "#version 330 core\n"
+const char* vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
                                  "void main()\n"
                                  "{\n"
                                  "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
                                  "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
+const char* fragmentShaderSource = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
                                    "uniform vec4 vertexColor;\n"
                                    "void main()\n"
@@ -14,29 +14,30 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "   FragColor = vertexColor;\n"
                                    "}\n\0";
 
-void processInput(GLFWwindow *window)
+vector2 windowSize = (vector2){ 0, 0 };
+
+GLFWwindow* glfwWindow;
+
+unsigned int shaderProgram;
+
+void openglWindowProcessInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-vector2 windowSize = (vector2){ 0, 0 };
-
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+void openglWindowFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
     windowSize.x = (float)width;
     windowSize.y = (float)height;
 }
 
-GLFWwindow* glfwWindow;
-unsigned int shaderProgram;
-
-vector2 getWindowSizeOpenglWindow() {
+vector2 openglWindowGetSize() {
     return windowSize;
 }
 
-void createOpenglWindow(window window)
+void openglWindowCreate(window window)
 {
     windowSize.x = (float)window.width;
     windowSize.y = (float)window.height;
@@ -58,7 +59,7 @@ void createOpenglWindow(window window)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(glfwWindow);
-    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(glfwWindow, openglWindowFramebufferSizeCallback);
 
     glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, GL_FALSE);
 
@@ -106,10 +107,10 @@ void createOpenglWindow(window window)
     glDeleteShader(fragmentShader);
 }
 
-void openglLoop(window window) {
+void openglWindowLoop(window window) {
     while (!glfwWindowShouldClose(glfwWindow)) {
         // Handle Input
-        processInput(glfwWindow);
+        openglWindowProcessInput(glfwWindow);
 
         // Render Start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -130,18 +131,22 @@ void openglLoop(window window) {
     }
 }
 
-void destroyOpenglWindow() {
+void openglWindowDestroy() {
     glDeleteProgram(shaderProgram);
 
     glfwTerminate();
 }
 
-void runOpenglApp(window window) {
-    createOpenglWindow(window);
-    createEntityBuffer();
+void openglWindowRun(window window) {
+    openglWindowCreate(window);
+    entityBufferCreate();
+    openglRenderCreate();
+
     userStart();
-    createOpenglRender();
-    openglLoop(window);
-    destroyOpenglRender();
-    destroyOpenglWindow();
+
+    openglWindowLoop(window);
+
+    openglRenderDestroy();
+    entityBufferDestroy();
+    openglWindowDestroy();
 }

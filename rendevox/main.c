@@ -1,14 +1,19 @@
 #include "rendevox.h"
 
 int main(int argc, char *argv[]) {
-    rvxCreateWindow("OpenGL", 1280, 720, "RVX Window", 0);
+    window window;
+    window.title = "RVX Window";
+    window.renderType = "OpenGL";
+    window.width = 1280;
+    window.height = 720;
+    windowCreate(&window);
 
     return 0;
 }
 
 void userStart() {
-    addQuadToEntityBuffer("Quad1", "quad", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
-    addQuadToEntityBuffer("Quad2", "quad", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+    entityBufferAddQuad("Quad1", "quad", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+    entityBufferAddQuad("Quad2", "quad", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
 }
 
 void userUpdate(float delta) {

@@ -3,26 +3,30 @@
 entity* entityBuffer;
 unsigned int entityBufferSize = 0;
 
-void createEntityBuffer() {
+void entityBufferCreate() {
     entityBuffer = malloc(sizeof(entity));
 }
 
-entity* getEntityBuffer() {
+void entityBufferDestroy() {
+    free(entityBuffer);
+}
+
+entity* entityBufferGet() {
     return entityBuffer;
 }
 
-unsigned int getEntityBufferSize() {
+unsigned int entityBufferGetSize() {
     return entityBufferSize;
 }
 
-void addToEntityBuffer(entity newEntity) {
+void entityBufferAdd(entity newEntity) {
     entityBufferSize++;
     entityBuffer = realloc(entityBuffer, sizeof(entity) * entityBufferSize);
     entityBuffer[entityBufferSize - 1] = newEntity;
 }
 
-void addQuadToEntityBuffer(const char* name, const char* type, vector2 position, vector2 size) {
-    vector2 windowSize = getWindowSizeOpenglWindow();
+void entityBufferAddQuad(const char* name, const char* type, vector2 position, vector2 size) {
+    vector2 windowSize = openglWindowGetSize();
     float windowSizeX = windowSize.y / 1000.0f;
     float windowSizeY = windowSize.x / 1000.0f;
 
@@ -62,5 +66,5 @@ void addQuadToEntityBuffer(const char* name, const char* type, vector2 position,
     quad.rotation = (vector3){ 0, 0, 0, 1 };
     quad.mesh = quadMesh;
 
-    addToEntityBuffer(quad);
+    entityBufferAdd(quad);
 }
