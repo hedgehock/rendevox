@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "glad/glad.h"
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -36,18 +37,3 @@
 #include "openglRender.h"
 
 #include "vulkanWindow.h"
-
-void runVulkanApp(window window);
-
-// Vulkan main functions
-void vulkanCreateWindow(window window);
-void vulkanInit();
-void vulkanMainLoop();
-void vulkanCleanup();
-
-// Vulkan initialisation functions
-void vulkanCreateInstance();
-void vulkanPickPhysicalDevice();
-
-// Vulkan Pick Physical Device Functions
-bool isDeviceSuitable(VkPhysicalDevice device);

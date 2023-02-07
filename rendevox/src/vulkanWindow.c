@@ -1,12 +1,8 @@
 #include "rendevox.h"
 
-#define GLFW_INCLUDE_VULKAN
-
-#include <GLFW/glfw3.h>
-
 GLFWwindow* vulkanWindow;
 
-char* requiredDeviceExtensions;
+string* requiredDeviceExtensions;
 int requiredDeviceExtensionsCount;
 
 VkInstance instance;
@@ -28,7 +24,7 @@ void runVulkanApp(window window) {
 }
 
 void vulkanInit() {
-    char* extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    string extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     requiredDeviceExtensions = extensions;
     requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(string);
 
