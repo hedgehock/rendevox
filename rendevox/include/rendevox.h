@@ -24,43 +24,10 @@
 #include "triangle.h"
 #include "matrix4.h"
 #include "mesh.h"
-
-// Entity declaration
-typedef struct {
-    char name[32];
-    const char* type;
-
-    vector3 position;
-    vector3 rotation;
-    mesh mesh;
-} entity;
-
-// EntityBuffer
-void entityBufferCreate();
-
-entity* entityBufferGet();
-unsigned int entityBufferGetSize();
-void entityBufferAddQuad(const char* name, const char* type, vector2 position, vector2 size);
-
-void entityBufferDestroy();
-
-// ---------
-// Rendering
-// ---------
-
-//
-// Opengl
-//
-
-void openglWindowRun(window window);
-
-// Window
-vector2 openglWindowGetSize();
-
-// Render
-void openglRenderCreate();
-void loopOpenglRender();
-void openglRenderDestroy();
+#include "entity.h"
+#include "entityBuffer.h"
+#include "openglWindow.h"
+#include "sorting.h"
 
 //
 // Vulkan
@@ -80,12 +47,3 @@ void vulkanPickPhysicalDevice();
 
 // Vulkan Pick Physical Device Functions
 bool isDeviceSuitable(VkPhysicalDevice device);
-
-// ---------
-// Utilities
-// ---------
-
-// Sorting functions
-void swap(triangle *a, triangle *b);
-int partition(triangle arr[], int low, int high);
-void quickSort(triangle arr[], int low, int high);
