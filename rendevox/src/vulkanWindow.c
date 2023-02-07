@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "../include/rendevox.h"
 
 #define GLFW_INCLUDE_VULKAN
 

@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "../include/rendevox.h"
 
 void drawTriangle(SDL_Renderer *renderer, vector2 v1, vector2 v2, vector2 v3, color color) {
     SDL_Vertex vertices[3];

@@ -6,6 +6,8 @@
 #include <math.h>
 #include <vulkan/vulkan.h>
 
+#include "vulkanWindow.h"
+
 // Rendevox
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen);
 
@@ -118,33 +120,6 @@ typedef struct {
     SDL_Renderer* sdlRenderer;
 } window;
 
-// Vulkan
-
-typedef struct {
-    bool GraphicsFamilyPresent;
-    bool PresentFamilyPresent;
-} vulkanIs;
-
-typedef struct {
-    uint32_t GraphicsFamily;
-    uint32_t PresentFamily;
-} vulkanFamily;
-
-typedef struct {
-    vulkanIs is;
-    vulkanFamily family;
-} vulkanQueueFamilyIndices;
-
-typedef struct {
-    VkSurfaceCapabilitiesKHR capabilities;
-    VkSurfaceFormatKHR* formats;
-    VkPresentModeKHR* presentModes;
-    uint32_t formatCount;
-    uint32_t presentModeCount;
-} vulkanSwapChainSupportDetails;
-
-typedef char* string;
-
 // ---------
 // Rendering
 // ---------
@@ -156,39 +131,6 @@ void runSDLApp(window window);
 void drawTriangle(SDL_Renderer* renderer, vector2 v1, vector2 v2, vector2 v3, color color);
 
 void drawText(SDL_Renderer* renderer, int x, int y, char* text, font font);
-
-// Vulkan
-void runVulkanApp(window window);
-
-// Vulkan main functions
-void vulkanCreateWindow(window window);
-
-void vulkanInit();
-
-void vulkanMainLoop();
-
-void vulkanCleanup();
-
-// Vulkan initialisation functions
-void vulkanCreateInstance();
-
-void vulkanPickPhysicalDevice();
-
-// Vulkan Pick Physical Device Functions
-bool isDeviceSuitable(VkPhysicalDevice device);
-
-vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-void vulkanCreateLogicalDevice();
-
-void vulkanCreateSurface();
-
-bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device);
-
-vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice device);
-
-// Vulkan print error and exit
-void vulkanError(string errorMessage);
 
 // ---------
 // Utilities

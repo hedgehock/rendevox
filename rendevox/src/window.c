@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "../include/rendevox.h"
 
 void rvxCreateWindow(const char* renderType, int width, int height, const char* title, char fullscreen) {
     // Define Window

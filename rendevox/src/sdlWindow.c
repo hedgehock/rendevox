@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "../include/rendevox.h"
 
 font main_font;
 
