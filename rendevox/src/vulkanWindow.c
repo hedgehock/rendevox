@@ -1,4 +1,4 @@
-#include "../include/rendevox.h"
+#include "rendevox.h"
 
 #define GLFW_INCLUDE_VULKAN
 
@@ -6,7 +6,7 @@
 
 GLFWwindow* vulkanWindow;
 
-string* requiredDeviceExtensions;
+char* requiredDeviceExtensions;
 int requiredDeviceExtensionsCount;
 
 VkInstance instance;
@@ -28,7 +28,7 @@ void runVulkanApp(window window) {
 }
 
 void vulkanInit() {
-    string extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    char* extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     requiredDeviceExtensions = extensions;
     requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(string);
 
@@ -269,7 +269,7 @@ vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice devic
 }
 
 // Vulkan error print with exit
-void vulkanError(string errorMessage) {
+void vulkanError(char* errorMessage) {
     fprintf(stderr, "%s%s", errorMessage, "\n");
     exit(EXIT_FAILURE);
 }

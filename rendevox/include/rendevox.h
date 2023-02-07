@@ -35,6 +35,8 @@
 #include "openglWindow.h"
 #include "openglRender.h"
 
+#include "vulkanWindow.h"
+
 void runVulkanApp(window window);
 
 // Vulkan main functions
