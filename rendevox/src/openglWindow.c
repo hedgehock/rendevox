@@ -1,15 +1,12 @@
 #include "rendevox.h"
 
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
-
-const char *vertexShaderSource = "#version 330 core\n"
+const char* vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
                                  "void main()\n"
                                  "{\n"
                                  "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
                                  "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
+const char* fragmentShaderSource = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
                                    "uniform vec4 vertexColor;\n"
                                    "void main()\n"
@@ -17,24 +14,34 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "   FragColor = vertexColor;\n"
                                    "}\n\0";
 
-void processInput(GLFWwindow *window)
+vector2 windowSize = (vector2){ 0, 0 };
+
+GLFWwindow* glfwWindow;
+
+unsigned int shaderProgram;
+
+void openglWindowProcessInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+void openglWindowFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    windowSize.x = (float)width;
+    windowSize.y = (float)height;
 }
 
-GLFWwindow* glfwWindow;
-unsigned int VAO;
-unsigned int VBO;
-unsigned int shaderProgram;
+vector2 openglWindowGetSize() {
+    return windowSize;
+}
 
-void createOpenglWindow(window window)
+void openglWindowCreate(window window)
 {
+    windowSize.x = (float)window.width;
+    windowSize.y = (float)window.height;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -52,7 +59,9 @@ void createOpenglWindow(window window)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(glfwWindow);
-    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(glfwWindow, openglWindowFramebufferSizeCallback);
+
+    glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, GL_FALSE);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -96,44 +105,14 @@ void createOpenglWindow(window window)
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    // Create Triangle
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f, // left
-            0.5f, -0.5f, 0.0f, // right
-            0.0f,  0.5f, 0.0f  // top
-    };
-
-    // Generate Vertex array and Vertex buffer
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    // Bind Vertex Array
-    glBindVertexArray(VAO);
-
-    // Pass buffer data
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Shader attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Unbind Vertex Array
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
-
-    // Wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void openglLoop(window window) {
+void openglWindowLoop(window window) {
     while (!glfwWindowShouldClose(glfwWindow)) {
-        processInput(glfwWindow);
+        // Handle Input
+        openglWindowProcessInput(glfwWindow);
 
-        // render
-        // ------
+        // Render Start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -143,26 +122,31 @@ void openglLoop(window window) {
         int vertexColorLocation = glGetUniformLocation(shaderProgram, "vertexColor");
         glUniform4f(vertexColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0); // no need to unbind it every time
+        // Render Loop
+        loopOpenglRender();
 
+        // Render End
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
     }
 }
 
-void destroyOpenglWindow() {
-    // Free memory
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+void openglWindowDestroy() {
     glDeleteProgram(shaderProgram);
 
     glfwTerminate();
 }
 
-void runOpenglApp(window window) {
-    createOpenglWindow(window);
-    openglLoop(window);
-    destroyOpenglWindow();
+void openglWindowRun(window window) {
+    openglWindowCreate(window);
+    entityBufferCreate();
+    openglRenderCreate();
+
+    userStart();
+
+    openglWindowLoop(window);
+
+    openglRenderDestroy();
+    entityBufferDestroy();
+    openglWindowDestroy();
 }
