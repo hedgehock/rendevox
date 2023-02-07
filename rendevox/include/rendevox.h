@@ -49,9 +49,3 @@ void vulkanPickPhysicalDevice();
 
 // Vulkan Pick Physical Device Functions
 bool isDeviceSuitable(VkPhysicalDevice device);
-
-// ---------
-// Utilities
-// ---------
-
-// Sorting functions

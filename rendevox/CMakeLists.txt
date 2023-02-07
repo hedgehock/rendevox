@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_FLAGS "-O3")
 
-include_directories(src)
 include_directories(include)
 
 if (APPLE)

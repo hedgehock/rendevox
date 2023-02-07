@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "include/rendevox.h"
 
 int main(int argc, char *argv[]) {
     window window;

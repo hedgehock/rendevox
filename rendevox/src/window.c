@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include "../include/rendevox.h"
 
 void windowCreate(window* window) {
     if (strcmp(window->renderType, "OpenGL") == 0) {
