@@ -57,7 +57,7 @@ void userUpdate(float delta) {
 
 ## How to run
 
-1. Create `main.c` file in app directory
+1. Create directory `app` and create file `main.c` inside
 2. Paste code from template
 3. Create `CMake Application` configuration in CLion with `Target` = `All Targets` and `executable` = `rendevox`
 
