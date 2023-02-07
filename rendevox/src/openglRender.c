@@ -67,7 +67,7 @@ void drawOpenglRender() {
 
 float lastTime = 0.0f;
 
-void loopOpenglRender() {
+void openglRenderDraw(openglWindow* openglWindow) {
     // Calculate delta time
     float currentTime = (float)glfwGetTime();
     float deltaTime = currentTime - lastTime;
@@ -83,7 +83,30 @@ void loopOpenglRender() {
         if (debug == true) printf("Entity name: %s\n", currentEntity.name);
 
         if (strcmp(currentEntity.type, "quad") == 0) {
-            addVerticesToVerticesBuffer(currentEntity.mesh.size, currentEntity.mesh.vertices);
+            float scaleX = openglWindow->windowSize.x / 1000.0f;
+            float scaleY = openglWindow->windowSize.y / 1000.0f;
+
+            float quadVertices[18];
+            quadVertices[0] = currentEntity.mesh.vertices[0] * scaleY;
+            quadVertices[1] = currentEntity.mesh.vertices[1] * scaleX;
+            quadVertices[2] = currentEntity.mesh.vertices[2];
+            quadVertices[3] = currentEntity.mesh.vertices[3] * scaleY;
+            quadVertices[4] = currentEntity.mesh.vertices[4] * scaleX;
+            quadVertices[5] = currentEntity.mesh.vertices[5];
+            quadVertices[6] = currentEntity.mesh.vertices[6] * scaleY;
+            quadVertices[7] = currentEntity.mesh.vertices[7] * scaleX;
+            quadVertices[8] = currentEntity.mesh.vertices[8];
+            quadVertices[9] = currentEntity.mesh.vertices[9] * scaleY;
+            quadVertices[10] = currentEntity.mesh.vertices[10] * scaleX;
+            quadVertices[11] = currentEntity.mesh.vertices[11];
+            quadVertices[12] = currentEntity.mesh.vertices[12] * scaleY;
+            quadVertices[13] = currentEntity.mesh.vertices[13] * scaleX;
+            quadVertices[14] = currentEntity.mesh.vertices[14];
+            quadVertices[15] = currentEntity.mesh.vertices[15] * scaleY;
+            quadVertices[16] = currentEntity.mesh.vertices[16] * scaleX;
+            quadVertices[17] = currentEntity.mesh.vertices[17];
+
+            addVerticesToVerticesBuffer(18, quadVertices);
         }
     }
 

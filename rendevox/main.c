@@ -3,7 +3,7 @@
 int main(int argc, char *argv[]) {
     window window;
     window.title = "RVX Window";
-    window.renderType = "Vulkan";
+    window.renderType = "OpenGL";
     window.width = 1280;
     window.height = 720;
     windowCreate(&window);

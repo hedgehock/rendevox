@@ -1,3 +1,3 @@
 void openglRenderCreate();
-void loopOpenglRender();
+void openglRenderDraw(openglWindow* openglWindow);
 void openglRenderDestroy();
