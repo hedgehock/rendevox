@@ -23,6 +23,9 @@ elseif(WIN32)
 endif()
 
 file(GLOB SRC src/*.c)
-add_executable(rendevox)
 
-target_sources(rendevox PRIVATE main.c ${SRC})
+add_library(rendevoxlib STATIC ${SRC})
+
+add_executable(rendevox ../app/main.c)
+
+target_link_libraries(rendevox rendevoxlib)

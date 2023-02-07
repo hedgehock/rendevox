@@ -29,7 +29,39 @@ $ pacman -S mingw-w64-x86_64-vulkan-devel
 - collision detection
 - basic physics
 
+## Template
+
+```c
+#include "include/rendevox.h"
+
+int main(int argc, char *argv[]) {
+    window window;
+    window.title = "RVX Window";
+    window.renderType = "OpenGL";
+    window.width = 1280;
+    window.height = 720;
+    windowCreate(&window);
+
+    return 0;
+}
+
+void userStart() {
+    entityBufferAddQuad("Quad1", "quad", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+    entityBufferAddQuad("Quad2", "quad", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+}
+
+void userUpdate(float delta) {
+    //printf("%f\n", delta);
+}
+```
+
 ## How to run
+
+1. Create `main.c` file in app directory
+2. Paste code from template
+3. Create `CMake Application` configuration in CLion with `Target` = `All Targets` and `executable` = `rendevox`
+
+Build script not working right now
 ``` shell
 $ run.sh
 ```
