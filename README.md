@@ -29,34 +29,6 @@ $ pacman -S mingw-w64-x86_64-vulkan-devel
 - collision detection
 - basic physics
 
-## Example code
-```c
-#include "rendevox.h"
-
-int main() {
-	rvxCreatewindow("SDL2", 1280, 720, "RVX Window", 0);
-}
-
-void start() {
-	Scene scene = createScene("3D", "Main scene");
-	setMainScene(scene);
-
-	Entity cube = { 0 };
-	cube.name("Cube1");
-	cube.position = (vector3){ 0, 0, 0 };
-	cube.rotation = (vector3){ 0, 0, 0, 0 };
-	cube.mesh = loadMeshFromFile("model.obj");
-	addToEntityBuffer(cube);
-}
-
-void update(int deltaSeconds) {
-	if(isKeyPressed(KEYBOARD_W)) {
-		Entity cube = findEntityInBuffer("Cube1");
-		cube.position = vector3Add(cube.position, (vector3){ 0, 0, 1 });
-	}
-}
-```
-
 ## How to run
 ``` shell
 $ run.sh
