@@ -74,7 +74,7 @@ void openglWindowCreate(openglWindow *openglWindow)
     glDeleteShader(fragmentShader);
 }
 
-void openglWindowLoop(openglWindow *openglWindow) {
+void openglWindowLoop(openglWindow *openglWindow, openglRender* openglRender) {
     while (!glfwWindowShouldClose(openglWindow->glfwWindow)) {
         // Handle Input
         openglWindowProcessInput(openglWindow->glfwWindow);
@@ -90,7 +90,7 @@ void openglWindowLoop(openglWindow *openglWindow) {
         glUniform4f(vertexColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 
         // Render Loop
-        openglRenderDraw(openglWindow);
+        openglRenderDraw(openglRender);
 
         // Render End
         glfwSwapBuffers(openglWindow->glfwWindow);
@@ -122,16 +122,17 @@ void openglWindowRun(window window) {
                                         "}\n\0";
     openglWindow.title = window.title;
     openglWindow.windowSize = (vector2){ (float)window.width, (float)window.height };
+    openglWindow.debug = false;
 
     openglWindowCreate(&openglWindow);
     entityBufferCreate();
-    openglRenderCreate();
+    openglRender openglRender = openglRenderCreate(&openglWindow);
 
     userStart();
 
-    openglWindowLoop(&openglWindow);
+    openglWindowLoop(&openglWindow, &openglRender);
 
-    openglRenderDestroy();
+    openglRenderDestroy(&openglRender);
     entityBufferDestroy();
     openglWindowDestroy(&openglWindow);
 }

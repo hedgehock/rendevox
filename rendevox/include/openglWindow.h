@@ -7,6 +7,8 @@ typedef struct {
 
     GLFWwindow* glfwWindow;
     unsigned int shaderProgram;
+
+    bool debug;
 } openglWindow;
 
 void openglWindowRun(window window);

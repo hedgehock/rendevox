@@ -1,34 +1,50 @@
 #include <rendevox.h>
 
-unsigned int VAO;
-unsigned int VBO;
+openglRender openglRenderCreate(openglWindow* openglWindow) {
+    openglRender result;
 
-float* verticesBuffer;
-unsigned int verticesBufferSize = 0;
+    result.openglWindow = openglWindow;
 
-bool debug = false;
+    result.lastTime = 0;
 
-void addVerticesToVerticesBuffer(int amount, const float* vertices) {
-    if (debug == true) printf("amount: %i\n", amount);
+    result.verticesBufferSize = 0;
+    result.verticesBuffer = malloc(sizeof(float));
+
+    // Generate Vertex array and Vertex buffer
+    glGenVertexArrays(1, &result.VAO);
+    glGenBuffers(1, &result.VBO);
+
+    return result;
+}
+
+void openglRenderDestroy(openglRender* openglRender) {
+    // Free memory
+    glDeleteVertexArrays(1, &openglRender->VAO);
+    glDeleteBuffers(1, &openglRender->VBO);
+}
+
+void openglRenderAddVerticesToVerticesBuffer(openglRender* openglRender, int amount, const float* vertices) {
+    if (openglRender->openglWindow->debug == true) printf("amount: %i\n", amount);
     for (int i = 0; i < amount; i++) {
-        verticesBuffer = realloc(verticesBuffer, sizeof(float) * (verticesBufferSize + 1));
-        verticesBuffer[verticesBufferSize] = vertices[i];
-        verticesBufferSize++;
+        openglRender->verticesBuffer = realloc(openglRender->verticesBuffer, sizeof(float) * (openglRender->verticesBufferSize + 1));
+        openglRender->verticesBuffer[openglRender->verticesBufferSize] = vertices[i];
+        openglRender->verticesBufferSize++;
     }
 }
 
-void cleanVerticesBuffer() {
-    verticesBufferSize = 0;
-    verticesBuffer = realloc(verticesBuffer, sizeof(float));
+void openglRenderCleanVerticesBuffer(openglRender* openglRender) {
+    openglRender->verticesBufferSize = 0;
+    openglRender->verticesBuffer = realloc(openglRender->verticesBuffer, sizeof(float));
 }
 
-void renderCreateVertexArray() {
+void openglRenderCreateVAO(openglRender* openglRender) {
     // Bind Vertex Array
-    glBindVertexArray(VAO);
+    glBindVertexArray(openglRender->VAO);
 
     // Pass buffer data
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, (GLsizei)sizeof (float) * verticesBufferSize, verticesBuffer, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, openglRender->VBO);
+    glBufferData(GL_ARRAY_BUFFER, (GLsizei)sizeof (float) * openglRender->verticesBufferSize,
+                 openglRender->verticesBuffer, GL_DYNAMIC_DRAW);
 
     // Shader attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -39,39 +55,17 @@ void renderCreateVertexArray() {
 
     glBindVertexArray(0);
 
-    if (debug == true) printf("Vertices buffer size: %i\n", verticesBufferSize);
+    if (openglRender->openglWindow->debug == true) printf("Vertices buffer size: %i\n", openglRender->verticesBufferSize);
 
     // Wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void openglRenderCreate() {
-    verticesBuffer = malloc(sizeof(float));
-
-    // Generate Vertex array and Vertex buffer
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-}
-
-void openglRenderDestroy() {
-    // Free memory
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-}
-
-void drawOpenglRender() {
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)verticesBufferSize / 3);
-    glBindVertexArray(0);
-}
-
-float lastTime = 0.0f;
-
-void openglRenderDraw(openglWindow* openglWindow) {
+void openglRenderDraw(openglRender* openglRender) {
     // Calculate delta time
     float currentTime = (float)glfwGetTime();
-    float deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
+    float deltaTime = currentTime - openglRender->lastTime;
+    openglRender->lastTime = currentTime;
 
     // Call user's update function and pass delta time
     userUpdate(deltaTime);
@@ -80,11 +74,11 @@ void openglRenderDraw(openglWindow* openglWindow) {
     for (int i = 0; i < entityBufferGetSize(); i++) {
         entity currentEntity = entityBufferGet()[i];
 
-        if (debug == true) printf("Entity name: %s\n", currentEntity.name);
+        if (openglRender->openglWindow->debug == true) printf("Entity name: %s\n", currentEntity.name);
 
         if (strcmp(currentEntity.type, "quad") == 0) {
-            float scaleX = openglWindow->windowSize.x / 1000.0f;
-            float scaleY = openglWindow->windowSize.y / 1000.0f;
+            float scaleX = openglRender->openglWindow->windowSize.x / 1000.0f;
+            float scaleY = openglRender->openglWindow->windowSize.y / 1000.0f;
 
             float quadVertices[18];
             quadVertices[0] = currentEntity.mesh.vertices[0] * scaleY;
@@ -106,21 +100,23 @@ void openglRenderDraw(openglWindow* openglWindow) {
             quadVertices[16] = currentEntity.mesh.vertices[16] * scaleX;
             quadVertices[17] = currentEntity.mesh.vertices[17];
 
-            addVerticesToVerticesBuffer(18, quadVertices);
+            openglRenderAddVerticesToVerticesBuffer(openglRender, 18, quadVertices);
         }
     }
 
     // Debug purposes
-    if (debug == true) {
+    if (openglRender->openglWindow->debug == true) {
         printf("\nNEW VERTICES BUFFER\n");
-        for (int i = 0; i < verticesBufferSize; i++) {
-            printf("VERTEX: %f \n", verticesBuffer[i]);
+        for (int i = 0; i < openglRender->verticesBufferSize; i++) {
+            printf("VERTEX: %f \n", openglRender->verticesBuffer[i]);
         }
     }
 
-    renderCreateVertexArray();
+    openglRenderCreateVAO(openglRender);
 
-    drawOpenglRender();
+    glBindVertexArray(openglRender->VAO);
+    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)openglRender->verticesBufferSize / 3);
+    glBindVertexArray(0);
 
-    cleanVerticesBuffer();
+    openglRenderCleanVerticesBuffer(openglRender);
 }
