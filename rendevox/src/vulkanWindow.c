@@ -1,8 +1,8 @@
-#include "rendevox.h"
+#include <rendevox.h>
 
 GLFWwindow* vulkanWindow;
 
-string* requiredDeviceExtensions;
+vulkanString* requiredDeviceExtensions;
 int requiredDeviceExtensionsCount;
 
 VkInstance instance;
@@ -16,25 +16,25 @@ VkDevice logicalDevice;
 VkQueue graphicsQueue;
 VkQueue presentQueue;
 
-void runVulkanApp(window window) {
-    vulkanCreateWindow(window);
-    vulkanInit();
-    vulkanMainLoop();
-    vulkanCleanup();
+void vulkanWindowRunVulkanApp(window window) {
+    vulkanWindowCreateWindow(window);
+    vulkanWindowInit();
+    vulkanWindowMainLoop();
+    vulkanWindowCleanup();
 }
 
-void vulkanInit() {
-    string extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+void vulkanWindowInit() {
+    vulkanString extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     requiredDeviceExtensions = extensions;
-    requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(string);
+    requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(vulkanString);
 
-    vulkanCreateInstance();
-    vulkanCreateSurface();
-    vulkanPickPhysicalDevice();
-    vulkanCreateLogicalDevice();
+    vulkanWindowCreateInstance();
+    vulkanWindowCreateSurface();
+    vulkanWindowPickPhysicalDevice();
+    vulkanWindowCreateLogicalDevice();
 }
 
-void vulkanCreateWindow(window window) {
+void vulkanWindowCreateWindow(window window) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -43,14 +43,14 @@ void vulkanCreateWindow(window window) {
     vulkanWindow = glfwCreateWindow(window.width, window.height, window.title, NULL, NULL);
 }
 
-void vulkanMainLoop() {
+void vulkanWindowMainLoop() {
     // GLFW window loop
     while (!glfwWindowShouldClose(vulkanWindow)) {
         glfwPollEvents();
     }
 }
 
-void vulkanCleanup() {
+void vulkanWindowCleanup() {
     vkDestroyDevice(logicalDevice, NULL);
     vkDestroySurfaceKHR(instance, surface, NULL);
     vkDestroyInstance(instance, NULL);
@@ -59,7 +59,7 @@ void vulkanCleanup() {
     glfwTerminate();
 }
 
-void vulkanCreateInstance() {
+void vulkanWindowCreateInstance() {
     // Information about application
     VkApplicationInfo appInfo = {0};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -91,8 +91,7 @@ void vulkanCreateInstance() {
     }
 }
 
-
-void vulkanPickPhysicalDevice() {
+void vulkanWindowPickPhysicalDevice() {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
 
@@ -105,7 +104,7 @@ void vulkanPickPhysicalDevice() {
 
     // Choose suitable GPU
     for (int i = 0; i < deviceCount; i++) {
-        if (isDeviceSuitable(devices[i])) {
+        if (vulkanWindowIsDeviceSuitable(devices[i])) {
             physicalDevice = devices[i];
             free(devices);
             break;
@@ -117,22 +116,22 @@ void vulkanPickPhysicalDevice() {
     }
 }
 
-bool isDeviceSuitable(VkPhysicalDevice device) {
+bool vulkanWindowIsDeviceSuitable(VkPhysicalDevice device) {
     // Get GPU properties and features
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    bool extensionsSupported = vulkanCheckDeviceExtensionSupport(device);
+    bool extensionsSupported = vulkanWindowCheckDeviceExtensionSupport(device);
 
     bool swapChainAdequate;
     if (extensionsSupported) {
-        vulkanSwapChainSupportDetails swapChainSupport = vulkanQuerySwapChainSupport(device);
+        vulkanWindowSwapChainSupportDetails swapChainSupport = vulkanWindowQuerySwapChainSupport(device);
         swapChainAdequate = swapChainSupport.formatCount != 0 && swapChainSupport.presentModeCount != 0;
     }
 
-    vulkanQueueFamilyIndices indices = findQueueFamilies(device);
+    vulkanWindowQueueFamilyIndices indices = vulkanWindowFindQueueFamilies(device);
 
     // Support only for dedicated GPU and Integrated GPU with geometry shaders support and checks if GPU has required Queue families and supports required extensions
     return (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ||
@@ -142,8 +141,8 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 }
 
 // Function to find queue families
-vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
-    vulkanQueueFamilyIndices indices;
+vulkanWindowQueueFamilyIndices vulkanWindowFindQueueFamilies(VkPhysicalDevice device) {
+    vulkanWindowQueueFamilyIndices indices;
 
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, NULL);
@@ -185,8 +184,8 @@ vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
     return indices;
 }
 
-void vulkanCreateLogicalDevice() {
-    vulkanQueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+void vulkanWindowCreateLogicalDevice() {
+    vulkanWindowQueueFamilyIndices indices = vulkanWindowFindQueueFamilies(physicalDevice);
 
     size_t queueFamilyCount = sizeof(indices.is) / sizeof(indices.is.GraphicsFamilyPresent);
 
@@ -228,13 +227,13 @@ void vulkanCreateLogicalDevice() {
     vkGetDeviceQueue(logicalDevice, indices.family.PresentFamily, 0, &presentQueue);
 }
 
-void vulkanCreateSurface() {
+void vulkanWindowCreateSurface() {
     if (glfwCreateWindowSurface(instance, vulkanWindow, NULL, &surface) != VK_SUCCESS) {
         vulkanError("Failed to create window surface!");
     }
 }
 
-bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device) {
+bool vulkanWindowCheckDeviceExtensionSupport(VkPhysicalDevice device) {
     uint32_t extensionsCount;
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionsCount, NULL);
 
@@ -254,18 +253,26 @@ bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device) {
     return supportedExtensionCount == requiredDeviceExtensionsCount;
 }
 
-vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice device) {
-    vulkanSwapChainSupportDetails details;
+vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysicalDevice device) {
+    vulkanWindowSwapChainSupportDetails details;
 
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, NULL);
+
+    details.formats = malloc(sizeof(VkSurfaceFormatKHR) * details.formatCount);
+
     vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, details.formats);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &details.presentModeCount, NULL);
+
+    details.presentModes = malloc(sizeof(VkPresentModeKHR) * details.presentModeCount);
+
     vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &details.presentModeCount, details.presentModes);
 
     return details;
 }
 
 // Vulkan error print with exit
-void vulkanError(char* errorMessage) {
+void vulkanError(vulkanString errorMessage) {
     fprintf(stderr, "%s%s", errorMessage, "\n");
     exit(EXIT_FAILURE);
 }

@@ -1,4 +1,4 @@
-#include "rendevox.h"
+#include <rendevox.h>
 
 unsigned int VAO;
 unsigned int VBO;

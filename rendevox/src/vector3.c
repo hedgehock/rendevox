@@ -1,4 +1,4 @@
-#include "../include/rendevox.h"
+#include <rendevox.h>
 
 vector3 matrix4MultiplyVector3(matrix4 *m, vector3 *i)
 {

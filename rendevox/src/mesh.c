@@ -1,4 +1,4 @@
-#include "../include/rendevox.h"
+#include <rendevox.h>
 
 mesh loadMeshFromFile(const char* path) {
     FILE *f;

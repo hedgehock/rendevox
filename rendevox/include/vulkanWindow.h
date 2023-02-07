@@ -1,17 +1,17 @@
 typedef struct {
     bool GraphicsFamilyPresent;
     bool PresentFamilyPresent;
-} vulkanIs;
+} vulkanWindowIs;
 
 typedef struct {
     uint32_t GraphicsFamily;
     uint32_t PresentFamily;
-} vulkanFamily;
+} vulkanWindowFamily;
 
 typedef struct {
-    vulkanIs is;
-    vulkanFamily family;
-} vulkanQueueFamilyIndices;
+    vulkanWindowIs is;
+    vulkanWindowFamily family;
+} vulkanWindowQueueFamilyIndices;
 
 typedef struct {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -19,40 +19,40 @@ typedef struct {
     VkPresentModeKHR* presentModes;
     uint32_t formatCount;
     uint32_t presentModeCount;
-} vulkanSwapChainSupportDetails;
+} vulkanWindowSwapChainSupportDetails;
 
-typedef char* string;
+typedef char* vulkanString;
 
 
 // Vulkan
-void runVulkanApp(window window);
+void vulkanWindowRunVulkanApp(window window);
 
 // Vulkan main functions
-void vulkanCreateWindow(window window);
+void vulkanWindowCreateWindow(window window);
 
-void vulkanInit();
+void vulkanWindowInit();
 
-void vulkanMainLoop();
+void vulkanWindowMainLoop();
 
-void vulkanCleanup();
+void vulkanWindowCleanup();
 
 // Vulkan initialisation functions
-void vulkanCreateInstance();
+void vulkanWindowCreateInstance();
 
-void vulkanPickPhysicalDevice();
+void vulkanWindowPickPhysicalDevice();
 
 // Vulkan Pick Physical Device Functions
-bool isDeviceSuitable(VkPhysicalDevice device);
+bool vulkanWindowIsDeviceSuitable(VkPhysicalDevice device);
 
-vulkanQueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+vulkanWindowQueueFamilyIndices vulkanWindowFindQueueFamilies(VkPhysicalDevice device);
 
-void vulkanCreateLogicalDevice();
+void vulkanWindowCreateLogicalDevice();
 
-void vulkanCreateSurface();
+void vulkanWindowCreateSurface();
 
-bool vulkanCheckDeviceExtensionSupport(VkPhysicalDevice device);
+bool vulkanWindowCheckDeviceExtensionSupport(VkPhysicalDevice device);
 
-vulkanSwapChainSupportDetails vulkanQuerySwapChainSupport(VkPhysicalDevice device);
+vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysicalDevice device);
 
 // Vulkan print error and exit
-void vulkanError(string errorMessage);
+void vulkanError(vulkanString errorMessage);

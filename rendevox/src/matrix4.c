@@ -1,4 +1,4 @@
-#include "../include/rendevox.h"
+#include <rendevox.h>
 
 matrix4 matrix4MakeIdentity()
 {

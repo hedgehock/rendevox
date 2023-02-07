@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <math.h>
+#include <glad/glad.h>
 
-#include "glad/glad.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <vulkan/vulkan.h>
 
 // min and max functions are not in standard C library
 #define min(a,b) (((a)<(b))?(a):(b))
