@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <SDL2/SDL.h>
@@ -16,55 +17,23 @@
 #define TAU (M_PI * 2.0)
 
 // Rendevox headers
-#include "window.h"
 #include "user.h"
+
+#include "window.h"
+
 #include "vector2.h"
 #include "vector3.h"
 #include "color.h"
 #include "triangle.h"
 #include "matrix4.h"
 #include "mesh.h"
+#include "entity.h"
 
-// Entity declaration
-typedef struct {
-    char name[32];
-    const char* type;
+#include "sorting.h"
+#include "entityBuffer.h"
 
-    vector3 position;
-    vector3 rotation;
-    mesh mesh;
-} entity;
-
-// EntityBuffer
-void entityBufferCreate();
-
-entity* entityBufferGet();
-unsigned int entityBufferGetSize();
-void entityBufferAddQuad(const char* name, const char* type, vector2 position, vector2 size);
-
-void entityBufferDestroy();
-
-// ---------
-// Rendering
-// ---------
-
-//
-// Opengl
-//
-
-void openglWindowRun(window window);
-
-// Window
-vector2 openglWindowGetSize();
-
-// Render
-void openglRenderCreate();
-void loopOpenglRender();
-void openglRenderDestroy();
-
-//
-// Vulkan
-//
+#include "openglWindow.h"
+#include "openglRender.h"
 
 void runVulkanApp(window window);
 
@@ -86,6 +55,3 @@ bool isDeviceSuitable(VkPhysicalDevice device);
 // ---------
 
 // Sorting functions
-void swap(triangle *a, triangle *b);
-int partition(triangle arr[], int low, int high);
-void quickSort(triangle arr[], int low, int high);
