@@ -256,6 +256,7 @@ bool vulkanWindowCheckDeviceExtensionSupport(VkPhysicalDevice device) {
 vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysicalDevice device) {
     vulkanWindowSwapChainSupportDetails details;
 
+    // Get Query swap chain that device support if support
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
     vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, NULL);
 
