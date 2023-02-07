@@ -113,6 +113,8 @@ typedef struct {
 // Entity declaration
 typedef struct {
     char name[32];
+    const char* type;
+
     vector3 position;
     vector3 rotation;
     mesh mesh;
@@ -123,7 +125,7 @@ void createEntityBuffer();
 entity* getEntityBuffer();
 unsigned int getEntityBufferSize();
 void addToEntityBuffer(entity addEntity);
-void addQuadToEntityBuffer(const char* name, vector2 position, vector2 size);
+void addQuadToEntityBuffer(const char* name, const char* type, vector2 position, vector2 size);
 
 /*
 // Scene declaration

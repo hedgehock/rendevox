@@ -7,8 +7,8 @@ int main(int argc, char *argv[]) {
 }
 
 void userStart() {
-    addQuadToEntityBuffer("Quad1", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
-    addQuadToEntityBuffer("Quad2", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+    addQuadToEntityBuffer("Quad1", "quad", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+    addQuadToEntityBuffer("Quad2", "quad", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
 }
 
 void userUpdate(float delta) {

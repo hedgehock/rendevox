@@ -68,19 +68,23 @@ void drawOpenglRender() {
 float lastTime = 0.0f;
 
 void loopOpenglRender() {
+    // Calculate delta time
     float currentTime = glfwGetTime();
     float deltaTime = currentTime - lastTime;
     lastTime = currentTime;
 
-
+    // Call user's update function and pass delta time
     userUpdate(deltaTime);
 
+    // Main drawing loop
     for (int i = 0; i < getEntityBufferSize(); i++) {
         entity currentEntity = getEntityBuffer()[i];
 
         if (debug == true) printf("Entity name: %s\n", currentEntity.name);
 
-        addVerticesToVerticesBuffer(currentEntity.mesh.size, currentEntity.mesh.vertices);
+        if (strcmp(currentEntity.type, "quad") == 0) {
+            addVerticesToVerticesBuffer(currentEntity.mesh.size, currentEntity.mesh.vertices);
+        }
     }
 
     // Debug purposes
