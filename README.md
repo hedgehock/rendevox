@@ -32,7 +32,7 @@ $ pacman -S mingw-w64-x86_64-vulkan-devel
 ## Template
 
 ```c
-#include "include/rendevox.h"
+#include "rendevox.h"
 
 int main(int argc, char *argv[]) {
     window window;
