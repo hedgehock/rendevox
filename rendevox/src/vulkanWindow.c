@@ -175,6 +175,7 @@ vulkanWindowQueueFamilyIndices vulkanWindowFindQueueFamilies(VkPhysicalDevice de
 
         if (presentSupport) {
             indices.is.PresentFamilyPresent = true;
+            indices.family.PresentFamily = i;
         }
 
         if (indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent) {
@@ -210,7 +211,7 @@ void vulkanWindowCreateLogicalDevice() {
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo*) queueCreateInfos;
+    createInfo.pQueueCreateInfos = queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
