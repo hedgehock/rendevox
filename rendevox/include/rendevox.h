@@ -28,6 +28,7 @@
 #include "mesh.h"
 #include "entity.h"
 
+#include "mathematicalOperations.h"
 #include "sorting.h"
 #include "entityBuffer.h"
 

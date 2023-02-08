@@ -32,6 +32,7 @@ void vulkanWindowInit() {
     vulkanWindowCreateSurface();
     vulkanWindowPickPhysicalDevice();
     vulkanWindowCreateLogicalDevice();
+    vulkanWindowCreateSwapChain();
 }
 
 void vulkanWindowCreateWindow(window window) {
@@ -253,6 +254,10 @@ bool vulkanWindowCheckDeviceExtensionSupport(VkPhysicalDevice device) {
     return supportedExtensionCount == requiredDeviceExtensionsCount;
 }
 
+void vulkanWindowCreateSwapChain() {
+
+}
+
 vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysicalDevice device) {
     vulkanWindowSwapChainSupportDetails details;
 
@@ -294,7 +299,21 @@ VkPresentModeKHR chooseSwapPresentMode(VkPresentModeKHR* availablePresentModes, 
 }
 
 VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities) {
+    if (capabilities->currentExtent.width != UINT32_MAX) {
+        return capabilities->currentExtent;
+    } else {
+        int width, height;
+        glfwGetFramebufferSize(vulkanWindow, &width, &height);
 
+        VkExtent2D actualExtent;
+        actualExtent.width = width;
+        actualExtent.height = height;
+
+        actualExtent.width = clamp(actualExtent.width, capabilities->minImageExtent.width, capabilities->maxImageExtent.width);
+        actualExtent.height = clamp(actualExtent.height, capabilities->minImageExtent.height, capabilities->maxImageExtent.height);
+
+        return actualExtent;
+    }
 }
 
 // Vulkan error print with exit
