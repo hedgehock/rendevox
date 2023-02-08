@@ -128,7 +128,7 @@ bool vulkanWindowIsDeviceSuitable(VkPhysicalDevice device) {
     bool swapChainAdequate;
     if (extensionsSupported) {
         vulkanWindowSwapChainSupportDetails swapChainSupport = vulkanWindowQuerySwapChainSupport(device);
-        swapChainAdequate = swapChainSupport.formatCount != 0 && swapChainSupport.presentModeCount != 0;
+        swapChainAdequate = swapChainSupport.formatsCount != 0 && swapChainSupport.presentModeCount != 0;
     }
 
     vulkanWindowQueueFamilyIndices indices = vulkanWindowFindQueueFamilies(device);
@@ -258,11 +258,11 @@ vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysical
 
     // Get Query swap chain that device support if support
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, NULL);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatsCount, NULL);
 
-    details.formats = malloc(sizeof(VkSurfaceFormatKHR) * details.formatCount);
+    details.formats = malloc(sizeof(VkSurfaceFormatKHR) * details.formatsCount);
 
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatCount, details.formats);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &details.formatsCount, details.formats);
     vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &details.presentModeCount, NULL);
 
     details.presentModes = malloc(sizeof(VkPresentModeKHR) * details.presentModeCount);
@@ -270,6 +270,31 @@ vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysical
     vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &details.presentModeCount, details.presentModes);
 
     return details;
+}
+
+VkSurfaceFormatKHR chooseSwapSurfaceFormat(VkSurfaceFormatKHR* availableFormats, uint32_t formatsCount) {
+    for (int i = 0; i < formatsCount; ++i) {
+        if (availableFormats[i].format == VK_FORMAT_B8G8R8A8_SRGB &&
+            availableFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            return availableFormats[i];
+        }
+    }
+
+    return availableFormats[0];
+}
+
+VkPresentModeKHR chooseSwapPresentMode(VkPresentModeKHR* availablePresentModes, uint32_t presentModeCount) {
+    for (int i = 0; i < presentModeCount; ++i) {
+        if (availablePresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return availablePresentModes[i];
+        }
+    }
+
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities) {
+
 }
 
 // Vulkan error print with exit
