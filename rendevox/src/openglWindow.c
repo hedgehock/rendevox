@@ -13,6 +13,8 @@ void openglWindowCreate(openglWindow *openglWindow)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
@@ -27,8 +29,6 @@ void openglWindowCreate(openglWindow *openglWindow)
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(openglWindow->glfwWindow);
-
-    glfwSetWindowAttrib(openglWindow->glfwWindow, GLFW_RESIZABLE, GL_FALSE);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
