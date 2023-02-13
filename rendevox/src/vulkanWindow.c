@@ -23,9 +23,11 @@ void vulkanWindowRunVulkanApp(window window) {
     vulkanWindowCleanup();
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "LocalValueEscapesScope"
 void vulkanWindowInit() {
     vulkanString extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-    requiredDeviceExtensions = extensions;
+    requiredDeviceExtensions = (vulkanString*) &extensions;
     requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(vulkanString);
 
     vulkanWindowCreateInstance();
@@ -33,6 +35,7 @@ void vulkanWindowInit() {
     vulkanWindowPickPhysicalDevice();
     vulkanWindowCreateLogicalDevice();
 }
+#pragma clang diagnostic pop
 
 void vulkanWindowCreateWindow(window window) {
     glfwInit();
@@ -189,30 +192,27 @@ void vulkanWindowCreateLogicalDevice() {
 
     size_t queueFamilyCount = sizeof(indices.is) / sizeof(indices.is.GraphicsFamilyPresent);
 
+    VkDeviceQueueCreateInfo* queueCreateInfos = calloc(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
+
     // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
     float queuePriority = 1.0f;
 
-    VkDeviceQueueCreateInfo firstQueue = {0};
-    VkDeviceQueueCreateInfo secondQueue = {0};
+    queueCreateInfos[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfos[0].queueFamilyIndex = indices.family.GraphicsFamily;
+    queueCreateInfos[0].queueCount = 1;
+    queueCreateInfos[0].pQueuePriorities = &queuePriority;
 
-    firstQueue.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    firstQueue.queueFamilyIndex = indices.family.GraphicsFamily;
-    firstQueue.queueCount = 1;
-    firstQueue.pQueuePriorities = &queuePriority;
-
-    secondQueue.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    secondQueue.queueFamilyIndex = indices.family.PresentFamily;
-    secondQueue.queueCount = 1;
-    secondQueue.pQueuePriorities = &queuePriority;
-
-    const VkDeviceQueueCreateInfo queueCreateInfos[] = {firstQueue, secondQueue};
+    queueCreateInfos[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfos[1].queueFamilyIndex = indices.family.PresentFamily;
+    queueCreateInfos[1].queueCount = 1;
+    queueCreateInfos[1].pQueuePriorities = &queuePriority;
 
     VkPhysicalDeviceFeatures deviceFeatures = {0};
 
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfos;
+    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo*) queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
