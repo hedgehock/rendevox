@@ -25,7 +25,7 @@ void vulkanWindowRunVulkanApp(window window) {
 
 void vulkanWindowInit() {
     vulkanString extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-    requiredDeviceExtensions = (vulkanString*) &extensions;
+    requiredDeviceExtensions = extensions;
     requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(vulkanString);
 
     vulkanWindowCreateInstance();
@@ -191,27 +191,30 @@ void vulkanWindowCreateLogicalDevice() {
 
     size_t queueFamilyCount = sizeof(indices.is) / sizeof(indices.is.GraphicsFamilyPresent);
 
-    VkDeviceQueueCreateInfo* queueCreateInfos = calloc(queueFamilyCount, sizeof(VkDeviceQueueCreateInfo));
+    VkDeviceQueueCreateInfo graphicQueueInfo = {0};
+    VkDeviceQueueCreateInfo presentQueueInfo = {0};
 
     // Priority to influence the scheduling of command buffer from 0.0f to 1.0f
     float queuePriority = 1.0f;
 
-    queueCreateInfos[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfos[0].queueFamilyIndex = indices.family.GraphicsFamily;
-    queueCreateInfos[0].queueCount = 1;
-    queueCreateInfos[0].pQueuePriorities = &queuePriority;
+    graphicQueueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    graphicQueueInfo.queueFamilyIndex = indices.family.GraphicsFamily;
+    graphicQueueInfo.queueCount = 1;
+    graphicQueueInfo.pQueuePriorities = &queuePriority;
 
-    queueCreateInfos[1].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfos[1].queueFamilyIndex = indices.family.PresentFamily;
-    queueCreateInfos[1].queueCount = 1;
-    queueCreateInfos[1].pQueuePriorities = &queuePriority;
+    presentQueueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    presentQueueInfo.queueFamilyIndex = indices.family.PresentFamily;
+    presentQueueInfo.queueCount = 1;
+    presentQueueInfo.pQueuePriorities = &queuePriority;
+
+    VkDeviceQueueCreateInfo queueCreateInfos[] = {graphicQueueInfo, presentQueueInfo};
 
     VkPhysicalDeviceFeatures deviceFeatures = {0};
 
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = queueCreateInfos;
+    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo*) &queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
@@ -310,8 +313,10 @@ VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities) {
         actualExtent.width = width;
         actualExtent.height = height;
 
-        actualExtent.width = clamp(actualExtent.width, capabilities->minImageExtent.width, capabilities->maxImageExtent.width);
-        actualExtent.height = clamp(actualExtent.height, capabilities->minImageExtent.height, capabilities->maxImageExtent.height);
+        actualExtent.width = clamp(actualExtent.width, capabilities->minImageExtent.width,
+                                   capabilities->maxImageExtent.width);
+        actualExtent.height = clamp(actualExtent.height, capabilities->minImageExtent.height,
+                                    capabilities->maxImageExtent.height);
 
         return actualExtent;
     }
