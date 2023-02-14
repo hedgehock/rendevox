@@ -1,3 +1,5 @@
+#include <rendevox.h>
+
 int clamp(int number, int minValue, int maxValue) {
     if (number < maxValue) {
         if (number > minValue) {

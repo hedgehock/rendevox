@@ -25,7 +25,7 @@ void vulkanWindowRunVulkanApp(window window) {
 
 void vulkanWindowInit() {
     vulkanString extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-    requiredDeviceExtensions = extensions;
+    requiredDeviceExtensions = (vulkanString*) &extensions;
     requiredDeviceExtensionsCount = sizeof(extensions) / sizeof(vulkanString);
 
     vulkanWindowCreateInstance();
