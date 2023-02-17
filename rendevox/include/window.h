@@ -1,8 +1,14 @@
+#ifndef WINDOW_H
+#define WINDOW_H
+
 typedef struct {
     const char* renderType;
     const char* title;
     int width;
     int height;
-} window;
+} Window;
 
-void windowCreate(window* window);
+Window WindowCreate(const char* renderType, const char* title, int width, int height);
+void WindowRun(Window* window);
+
+#endif

@@ -1,15 +1,25 @@
+#ifndef OPENGLWINDOW_H
+#define OPENGLWINDOW_H
+
 typedef struct {
+    Window *window;
+
     const char* vertexShaderSource;
     const char* fragmentShaderSource;
-
-    const char* title;
-    vector2 windowSize;
 
     GLFWwindow* glfwWindow;
     unsigned int shaderProgram;
 
     bool debug;
-} openglWindow;
+} OpenglWindow;
 
-void openglWindowRun(window window);
-vector2 openglWindowGetSize();
+OpenglWindow OpenglWindowCreate(Window *window, const char* vertexShaderSource, const char* fragmentShaderSource, bool debug);
+
+void OpenglWindowRun(OpenglWindow *openglWindow);
+void OpenglWindowInit(OpenglWindow *openglWindow);
+void OpenglWindowCompileShaders(OpenglWindow *openglWindow);
+void OpenglWindowProcessInput(GLFWwindow *window);
+void OpenglWindowLoop(OpenglWindow *openglWindow);
+void OpenglWindowDestroy(OpenglWindow *openglWindow);
+
+#endif

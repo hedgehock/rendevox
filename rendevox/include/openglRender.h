@@ -1,5 +1,8 @@
+#ifndef OPENGLRENDER_H
+#define OPENGLRENDER_H
+
 typedef struct {
-    openglWindow* openglWindow;
+    OpenglWindow* openglWindow;
 
     unsigned int VAO;
     unsigned int VBO;
@@ -7,10 +10,16 @@ typedef struct {
     float* verticesBuffer;
     unsigned int verticesBufferSize;
 
-    // Delta time
     float lastTime;
-} openglRender;
+} OpenglRender;
 
-openglRender openglRenderCreate(openglWindow* openglWindow);
-void openglRenderDraw(openglRender* openglRender);
-void openglRenderDestroy(openglRender* openglRender);
+OpenglRender OpenglRenderCreate(OpenglWindow* openglWindow);
+
+void OpenglRenderDraw(OpenglRender* openglRender);
+void OpenglRenderAddVerticesToVerticesBuffer(OpenglRender* openglRender, int amount, const float* vertices);
+void OpenglRenderCleanVerticesBuffer(OpenglRender* openglRender);
+void OpenglRenderCreateVAO(OpenglRender* openglRender);
+
+void OpenglRenderDestroy(OpenglRender* openglRender);
+
+#endif

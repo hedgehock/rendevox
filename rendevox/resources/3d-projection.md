@@ -227,7 +227,7 @@ typedef struct {
    float y;  
    float z;  
    float w;  
-} vector3;
+} Vector3;
 ```
 
 Output vector
@@ -235,11 +235,11 @@ Output vector
 0 0 0 0
 ```
 
-### Matrix multiply vector3
+### Matrix multiply Vector3
 ```c
-vector3 matrixMultiplyVector3(matrix4 *m, vector3 *i)  
+Vector3 matrixMultiplyVector3(matrix4 *m, Vector3 *i)  
 {  
-   vector3 tempVector;  
+   Vector3 tempVector;  
    tempVector.x = i->x * m->m[0][0] + i->y * m->m[1][0] + i->z * m->m[2][0] + i->w * m->m[3][0];  
    tempVector.y = i->x * m->m[0][1] + i->y * m->m[1][1] + i->z * m->m[2][1] + i->w * m->m[3][1];  
    tempVector.z = i->x * m->m[0][2] + i->y * m->m[1][2] + i->z * m->m[2][2] + i->w * m->m[3][2];  
@@ -250,39 +250,39 @@ vector3 matrixMultiplyVector3(matrix4 *m, vector3 *i)
 
 ### Vector3 addition
 ```c
-vector3 vector3Add(vector3 *v1, vector3 *v2)  
+Vector3 Vector3Add(Vector3 *v1, Vector3 *v2)  
 {  
-   return (vector3){ v1->x + v2->x, v1->y + v2->y, v1->z + v2->z };  
+   return (Vector3){ v1->x + v2->x, v1->y + v2->y, v1->z + v2->z };  
 }
 ```
 
 ### Vector3 subtraction
 ```c
-vector3 vector3Sub(vector3 *v1, vector3 *v2)  
+Vector3 Vector3Sub(Vector3 *v1, Vector3 *v2)  
 {  
-   return (vector3){ v1->x - v2->x, v1->y - v2->y, v1->z - v2->z };  
+   return (Vector3){ v1->x - v2->x, v1->y - v2->y, v1->z - v2->z };  
 }
 ```
 
 ### Vector3 multiplication
 ```c
-vector3 vector3Mul(vector3 *v1, float amount)  
+Vector3 Vector3Mul(Vector3 *v1, float amount)  
 {  
-   return (vector3){ v1->x * amount, v1->y * amount, v1->z * amount };  
+   return (Vector3){ v1->x * amount, v1->y * amount, v1->z * amount };  
 }
 ```
 
 ### Vector3 division
 ```c
-vector3 vector3Div(vector3 *v1, float amount)  
+Vector3 Vector3Div(Vector3 *v1, float amount)  
 {  
-   return (vector3){ v1->x / amount, v1->y / amount, v1->z / amount };  
+   return (Vector3){ v1->x / amount, v1->y / amount, v1->z / amount };  
 }
 ```
 
 ### Vector3 dot product
 ```c
-float vector3DotProduct(vector3 *v1, vector3 *v2)  
+float Vector3DotProduct(Vector3 *v1, Vector3 *v2)  
 {  
    return v1->x*v2->x + v1->y*v2->y + v1->z * v2->z;  
 }
@@ -290,26 +290,26 @@ float vector3DotProduct(vector3 *v1, vector3 *v2)
 
 ### Vector3 length
 ```c
-float vector3Length(vector3 *v)  
+float Vector3Length(Vector3 *v)  
 {  
-   return sqrtf(vector3DotProduct(v, v));  
+   return sqrtf(Vector3DotProduct(v, v));  
 }
 ```
 
 ### Vector3 normalise
 ```c
-vector3 vector3Normalise(vector3 *v)  
+Vector3 Vector3Normalise(Vector3 *v)  
 {  
-   float lenght = vector3Length(v);  
-   return (vector3){ v->x / length, v->y / length, v->z / length };  
+   float lenght = Vector3Length(v);  
+   return (Vector3){ v->x / length, v->y / length, v->z / length };  
 }
 ```
 
 ### Vector3 cross product
 ```c
-vector3 vector3CrossProduct(vector3 *v1, vector3 *v2)  
+Vector3 Vector3CrossProduct(Vector3 *v1, Vector3 *v2)  
 {  
-   vector3 tempVector;  
+   Vector3 tempVector;  
    tempVector.x = v1->y * v2->z - v1->z * v2->y;  
    tempVector.y = v1->z * v2->x - v1->x * v2->z;  
    tempVector.z = v1->x * v2->y - v1->y * v2->x;  
@@ -319,15 +319,15 @@ vector3 vector3CrossProduct(vector3 *v1, vector3 *v2)
 
 ### Vector3 intersect plane
 ```c
-vector3 vector3IntersectPlane(vector3 *planeP, vector3 *planeN, vector3 *lineStart, vector3 *lineEnd)  
+Vector3 Vector3IntersectPlane(Vector3 *planeP, Vector3 *planeN, Vector3 *lineStart, Vector3 *lineEnd)  
 {  
-   *planeN = vector3Normalise(planeN);  
-   float planeD = -vector3DotProduct(planeN, planeP);  
-   float ad = vector3DotProduct(lineStart, planeN);  
-   float bd = vector3DotProduct(lineEnd, planeN);  
+   *planeN = Vector3Normalise(planeN);  
+   float planeD = -Vector3DotProduct(planeN, planeP);  
+   float ad = Vector3DotProduct(lineStart, planeN);  
+   float bd = Vector3DotProduct(lineEnd, planeN);  
    float t = (-planeD - ad) / (bd - ad);  
-   vector3 lineStartToEnd = vector3Sub(lineEnd, lineStart);  
-   vector3 lineToIntersect = vector3Mul(&lineStartToEnd, t);  
-   return vector3Add(lineStart, &lineToIntersect);  
+   Vector3 lineStartToEnd = Vector3Sub(lineEnd, lineStart);  
+   Vector3 lineToIntersect = Vector3Mul(&lineStartToEnd, t);  
+   return Vector3Add(lineStart, &lineToIntersect);  
 }
 ```

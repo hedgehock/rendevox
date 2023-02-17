@@ -16,7 +16,7 @@ VkDevice logicalDevice;
 VkQueue graphicsQueue;
 VkQueue presentQueue;
 
-void vulkanWindowRunVulkanApp(window window) {
+void vulkanWindowRunVulkanApp(Window window) {
     vulkanWindowCreateWindow(window);
     vulkanWindowInit();
     vulkanWindowMainLoop();
@@ -34,10 +34,11 @@ void vulkanWindowInit() {
     vulkanWindowCreateSurface();
     vulkanWindowPickPhysicalDevice();
     vulkanWindowCreateLogicalDevice();
+    vulkanWindowCreateSwapChain();
 }
 #pragma clang diagnostic pop
 
-void vulkanWindowCreateWindow(window window) {
+void vulkanWindowCreateWindow(Window window) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -177,6 +178,7 @@ vulkanWindowQueueFamilyIndices vulkanWindowFindQueueFamilies(VkPhysicalDevice de
 
         if (presentSupport) {
             indices.is.PresentFamilyPresent = true;
+            indices.family.PresentFamily = i;
         }
 
         if (indices.is.GraphicsFamilyPresent && indices.is.PresentFamilyPresent) {
@@ -212,7 +214,7 @@ void vulkanWindowCreateLogicalDevice() {
     // Logical device info
     VkDeviceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = (const VkDeviceQueueCreateInfo*) queueCreateInfos;
+    createInfo.pQueueCreateInfos = queueCreateInfos;
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.queueCreateInfoCount = queueFamilyCount;
     createInfo.enabledLayerCount = 0;
@@ -256,6 +258,10 @@ bool vulkanWindowCheckDeviceExtensionSupport(VkPhysicalDevice device) {
     return supportedExtensionCount == requiredDeviceExtensionsCount;
 }
 
+void vulkanWindowCreateSwapChain() {
+
+}
+
 vulkanWindowSwapChainSupportDetails vulkanWindowQuerySwapChainSupport(VkPhysicalDevice device) {
     vulkanWindowSwapChainSupportDetails details;
 
@@ -297,7 +303,21 @@ VkPresentModeKHR chooseSwapPresentMode(VkPresentModeKHR* availablePresentModes, 
 }
 
 VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities) {
+    if (capabilities->currentExtent.width != UINT32_MAX) {
+        return capabilities->currentExtent;
+    } else {
+        int width, height;
+        glfwGetFramebufferSize(vulkanWindow, &width, &height);
 
+        VkExtent2D actualExtent;
+        actualExtent.width = width;
+        actualExtent.height = height;
+
+        actualExtent.width = clamp(actualExtent.width, capabilities->minImageExtent.width, capabilities->maxImageExtent.width);
+        actualExtent.height = clamp(actualExtent.height, capabilities->minImageExtent.height, capabilities->maxImageExtent.height);
+
+        return actualExtent;
+    }
 }
 
 // Vulkan error print with exit

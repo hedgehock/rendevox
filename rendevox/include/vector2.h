@@ -1,4 +1,4 @@
 typedef struct {
     float x;
     float y;
-} vector2;
+} Vector2;

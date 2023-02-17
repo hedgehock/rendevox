@@ -1,7 +1,7 @@
-void entityBufferCreate();
+void EntityBufferCreate();
 
-entity* entityBufferGet();
-unsigned int entityBufferGetSize();
-void entityBufferAddQuad(const char* name, const char* type, vector2 position, vector2 size);
+entity* EntityBufferGet();
+unsigned int EntityBufferGetSize();
+void EntityBufferAddQuad(const char* name, const char* type, Vector2 position, Vector2 size);
 
-void entityBufferDestroy();
+void EntityBufferDestroy();

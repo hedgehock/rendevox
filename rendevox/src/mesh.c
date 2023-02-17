@@ -15,7 +15,7 @@ mesh loadMeshFromFile(const char* path) {
     char vertexCount = 0;
     char faceCount = 0;
 
-    vector3 *vBuff = malloc(sizeof(vector3));
+    Vector3 *vBuff = malloc(sizeof(Vector3));
     unsigned int vBuffSize = 0;
 
     mesh tempMesh;
@@ -34,7 +34,7 @@ mesh loadMeshFromFile(const char* path) {
                 vBuff[vBuffSize].z = atof(lineBuff);
 
                 vBuffSize += 1;
-                vBuff = realloc(vBuff, sizeof(vector3) * (vBuffSize + 1));
+                vBuff = realloc(vBuff, sizeof(Vector3) * (vBuffSize + 1));
             }
 
             vertexCount -= 1;
