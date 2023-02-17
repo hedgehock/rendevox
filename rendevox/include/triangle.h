@@ -1,4 +1,4 @@
 typedef struct {
-    vector3 p[3];
+    Vector3 p[3];
     color c;
 } triangle;

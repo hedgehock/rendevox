@@ -25,10 +25,10 @@ typedef char* vulkanString;
 
 
 // Vulkan
-void vulkanWindowRunVulkanApp(window window);
+void vulkanWindowRunVulkanApp(Window window);
 
 // Vulkan main functions
-void vulkanWindowCreateWindow(window window);
+void vulkanWindowCreateWindow(Window window);
 
 void vulkanWindowInit();
 

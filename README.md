@@ -35,22 +35,18 @@ $ pacman -S mingw-w64-x86_64-vulkan-devel
 #include "rendevox.h"
 
 int main(int argc, char *argv[]) {
-    window window;
-    window.title = "RVX Window";
-    window.renderType = "OpenGL";
-    window.width = 1280;
-    window.height = 720;
-    windowCreate(&window);
+    Window window = WindowCreate("OpenGL", "RVX", 1280, 720);
+    WindowRun(&window);
 
     return 0;
 }
 
-void userStart() {
-    entityBufferAddQuad("Quad1", "quad", (vector2){ -1.0f, 0 }, (vector2){ 0.2f, 0.4f });
-    entityBufferAddQuad("Quad2", "quad", (vector2){ 1.0f, 0 }, (vector2){ 0.2f, 0.4f });
+void UserStart() {
+    EntityBufferAddQuad("Quad1", "quad", (Vector2) {-1.0f, 0}, (Vector2) {0.2f, 0.4f});
+    EntityBufferAddQuad("Quad2", "quad", (Vector2) {1.0f, 0}, (Vector2) {0.2f, 0.4f});
 }
 
-void userUpdate(float delta) {
+void UserUpdate(float delta) {
     //printf("%f\n", delta);
 }
 ```

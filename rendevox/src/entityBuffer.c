@@ -3,19 +3,19 @@
 entity* entityBuffer;
 unsigned int entityBufferSize = 0;
 
-void entityBufferCreate() {
+void EntityBufferCreate() {
     entityBuffer = malloc(sizeof(entity));
 }
 
-void entityBufferDestroy() {
+void EntityBufferDestroy() {
     free(entityBuffer);
 }
 
-entity* entityBufferGet() {
+entity* EntityBufferGet() {
     return entityBuffer;
 }
 
-unsigned int entityBufferGetSize() {
+unsigned int EntityBufferGetSize() {
     return entityBufferSize;
 }
 
@@ -25,7 +25,7 @@ void entityBufferAdd(entity newEntity) {
     entityBuffer[entityBufferSize - 1] = newEntity;
 }
 
-void entityBufferAddQuad(const char* name, const char* type, vector2 position, vector2 size) {
+void EntityBufferAddQuad(const char* name, const char* type, Vector2 position, Vector2 size) {
     mesh quadMesh;
     quadMesh.vertices = malloc(sizeof(float) * 18);
     //

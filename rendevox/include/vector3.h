@@ -3,14 +3,14 @@ typedef struct {
     float y;
     float z;
     float w;
-} vector3;
+} Vector3;
 
-vector3 vector3Add(vector3 *v1, vector3 *v2);
-vector3 vector3Sub(vector3 *v1, vector3 *v2);
-vector3 vector3Mul(vector3 *v1, float amount);
-vector3 vector3Div(vector3 *v1, float amount);
-float vector3DotProduct(vector3 *v1, vector3 *v2);
-float vector3Length(vector3 *v);
-vector3 vector3Normalise(vector3 *v);
-vector3 vector3CrossProduct(vector3 *v1, vector3 *v2);
-vector3 vector3IntersectPlane(vector3 *planeP, vector3 *planeN, vector3 *lineStart, vector3 *lineEnd);
+Vector3 Vector3Add(Vector3 *v1, Vector3 *v2);
+Vector3 Vector3Sub(Vector3 *v1, Vector3 *v2);
+Vector3 Vector3Mul(Vector3 *v1, float amount);
+Vector3 Vector3Div(Vector3 *v1, float amount);
+float Vector3DotProduct(Vector3 *v1, Vector3 *v2);
+float Vector3Length(Vector3 *v);
+Vector3 Vector3Normalise(Vector3 *v);
+Vector3 Vector3CrossProduct(Vector3 *v1, Vector3 *v2);
+Vector3 Vector3IntersectPlane(Vector3 *planeP, Vector3 *planeN, Vector3 *lineStart, Vector3 *lineEnd);

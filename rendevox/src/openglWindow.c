@@ -1,41 +1,28 @@
 #include <rendevox.h>
 
-void openglWindowProcessInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+OpenglWindow OpenglWindowCreate(Window *window, const char* vertexShaderSource, const char* fragmentShaderSource, bool debug) {
+    OpenglWindow result;
+    result.window = window;
+    result.vertexShaderSource = vertexShaderSource;
+    result.fragmentShaderSource = fragmentShaderSource;
+    result.debug = debug;
+    return result;
 }
 
-void openglWindowCreate(openglWindow *openglWindow)
-{
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+void OpenglWindowRun(OpenglWindow *openglWindow) {
+    OpenglWindowInit(openglWindow);
+    OpenglWindowCompileShaders(openglWindow);
+    EntityBufferCreate();
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    UserStart();
 
-    openglWindow->glfwWindow = glfwCreateWindow((int)openglWindow->windowSize.x,
-                                                (int)openglWindow->windowSize.y,
-                                                openglWindow->title, NULL, NULL);
-    if (openglWindow->glfwWindow == NULL)
-    {
-        printf("Cannot create GLFW window");
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(openglWindow->glfwWindow);
+    OpenglWindowLoop(openglWindow);
 
-    glfwSetWindowAttrib(openglWindow->glfwWindow, GLFW_RESIZABLE, GL_FALSE);
+    EntityBufferDestroy();
+    OpenglWindowDestroy(openglWindow);
+}
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        printf("Cannot load GLAD");
-        exit(EXIT_FAILURE);
-    }
-
+void OpenglWindowCompileShaders(OpenglWindow *openglWindow) {
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &openglWindow->vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -74,65 +61,72 @@ void openglWindowCreate(openglWindow *openglWindow)
     glDeleteShader(fragmentShader);
 }
 
-void openglWindowLoop(openglWindow *openglWindow, openglRender* openglRender) {
+void OpenglWindowInit(OpenglWindow *openglWindow)
+{
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    openglWindow->glfwWindow = glfwCreateWindow(openglWindow->window->width, openglWindow->window->height,
+                                                openglWindow->window->title, NULL, NULL);
+    if (openglWindow->glfwWindow == NULL)
+    {
+        printf("Cannot create GLFW window");
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    glfwMakeContextCurrent(openglWindow->glfwWindow);
+
+    glfwSetWindowAttrib(openglWindow->glfwWindow, GLFW_RESIZABLE, GL_FALSE);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        printf("Cannot load GLAD");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void OpenglWindowProcessInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+
+void OpenglWindowLoop(OpenglWindow *openglWindow) {
+    OpenglRender openglRender = OpenglRenderCreate(openglWindow);
+
     while (!glfwWindowShouldClose(openglWindow->glfwWindow)) {
-        // Handle Input
-        openglWindowProcessInput(openglWindow->glfwWindow);
+        OpenglWindowProcessInput(openglWindow->glfwWindow);
 
         // Render Start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw our first triangle
         glUseProgram(openglWindow->shaderProgram);
 
         int vertexColorLocation = glGetUniformLocation(openglWindow->shaderProgram, "vertexColor");
         glUniform4f(vertexColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 
         // Render Loop
-        openglRenderDraw(openglRender);
+        OpenglRenderDraw(&openglRender);
 
         // Render End
         glfwSwapBuffers(openglWindow->glfwWindow);
         glfwPollEvents();
     }
+
+    OpenglRenderDestroy(&openglRender);
 }
 
-void openglWindowDestroy(openglWindow *openglWindow) {
+void OpenglWindowDestroy(OpenglWindow *openglWindow) {
     glDeleteProgram(openglWindow->shaderProgram);
 
     glfwTerminate();
-}
-
-void openglWindowRun(window window) {
-    openglWindow openglWindow;
-    openglWindow.vertexShaderSource = "#version 330 core\n"
-                                      "layout (location = 0) in vec3 aPos;\n"
-                                      "void main()\n"
-                                      "{\n"
-                                      "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                      "}\0";
-
-    openglWindow.fragmentShaderSource = "#version 330 core\n"
-                                        "out vec4 FragColor;\n"
-                                        "uniform vec4 vertexColor;\n"
-                                        "void main()\n"
-                                        "{\n"
-                                        "   FragColor = vertexColor;\n"
-                                        "}\n\0";
-    openglWindow.title = window.title;
-    openglWindow.windowSize = (vector2){ (float)window.width, (float)window.height };
-    openglWindow.debug = false;
-
-    openglWindowCreate(&openglWindow);
-    entityBufferCreate();
-    openglRender openglRender = openglRenderCreate(&openglWindow);
-
-    userStart();
-
-    openglWindowLoop(&openglWindow, &openglRender);
-
-    openglRenderDestroy(&openglRender);
-    entityBufferDestroy();
-    openglWindowDestroy(&openglWindow);
 }

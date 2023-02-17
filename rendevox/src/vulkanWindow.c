@@ -16,7 +16,7 @@ VkDevice logicalDevice;
 VkQueue graphicsQueue;
 VkQueue presentQueue;
 
-void vulkanWindowRunVulkanApp(window window) {
+void vulkanWindowRunVulkanApp(Window window) {
     vulkanWindowCreateWindow(window);
     vulkanWindowInit();
     vulkanWindowMainLoop();
@@ -35,7 +35,7 @@ void vulkanWindowInit() {
     vulkanWindowCreateSwapChain();
 }
 
-void vulkanWindowCreateWindow(window window) {
+void vulkanWindowCreateWindow(Window window) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
