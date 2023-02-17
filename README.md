@@ -17,9 +17,8 @@ $ pacman -S mingw-w64-x86_64-vulkan-devel
 ```
 
 - C99 compiler
-- C standard library
+- C standard libraries
 - CMake
-- SDL2 and SDL2_ttf
 - Glfw
 - Vulkan
 
