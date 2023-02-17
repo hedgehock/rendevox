@@ -23,6 +23,8 @@ void vulkanWindowRunVulkanApp(Window window) {
     vulkanWindowCleanup();
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "LocalValueEscapesScope"
 void vulkanWindowInit() {
     vulkanString extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     requiredDeviceExtensions = (vulkanString*) &extensions;
@@ -34,6 +36,7 @@ void vulkanWindowInit() {
     vulkanWindowCreateLogicalDevice();
     vulkanWindowCreateSwapChain();
 }
+#pragma clang diagnostic pop
 
 void vulkanWindowCreateWindow(Window window) {
     glfwInit();
